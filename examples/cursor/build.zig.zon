@@ -1,0 +1,22 @@
+.{
+    .name = .pugl_cursor_demo,
+    .version = "0.0.0",
+    .fingerprint = 0x663d14ff11fd1af1,
+
+    .dependencies = .{
+        .pugl = .{
+            .path = "../..",
+        },
+
+        .zigglgen = .{
+            .url = "https://github.com/castholm/zigglgen/archive/acb71c723ddfb11e39c17a3925897da9d9337964.tar.gz",
+            .hash = "zigglgen-0.4.0-bmyqLWjhLQDzchu_2y_Sq_maUNfbfWYVnBA0zON3UnxT",
+        },
+    },
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}

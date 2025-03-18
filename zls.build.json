@@ -1,0 +1,8 @@
+{
+  "build_options": [
+    { "name": "opengl", "value": true },
+    { "name": "vulkan", "value": true },
+    { "name": "cairo", "value": true },
+    { "name": "stub", "value": true }
+  ]
+}

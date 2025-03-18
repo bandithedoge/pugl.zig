@@ -1,0 +1,91 @@
+const c = @import("c.zig");
+
+/// Keyboard key codepoints.
+///
+/// All keys are identified by a Unicode code point in `Key.key`.
+/// This enumeration defines constants for special keys that do not have a standard code point,
+/// and some convenience constants for control characters.
+/// Note that all keys are handled in the same way,
+/// this enumeration is just for convenience when writing hard-coded key bindings.
+///
+/// Keys that do not have a standard code point use values in the Private Use Area in the Basic Multilingual Plane
+/// (`U+E000` to `U+F8FF`).
+/// Applications must take care to not interpret these values beyond key detection,
+/// the mapping used here is arbitrary and specific to Pugl.
+pub const Keycode = enum(c_uint) {
+    none = c.PUGL_KEY_NONE,
+    backspace = c.PUGL_KEY_BACKSPACE,
+    tab = c.PUGL_KEY_TAB,
+    enter = c.PUGL_KEY_ENTER,
+    escape = c.PUGL_KEY_ESCAPE,
+    delete = c.PUGL_KEY_DELETE,
+    space = c.PUGL_KEY_SPACE,
+    f1 = c.PUGL_KEY_F1,
+    f2 = c.PUGL_KEY_F2,
+    f3 = c.PUGL_KEY_F3,
+    f4 = c.PUGL_KEY_F4,
+    f5 = c.PUGL_KEY_F5,
+    f6 = c.PUGL_KEY_F6,
+    f7 = c.PUGL_KEY_F7,
+    f8 = c.PUGL_KEY_F8,
+    f9 = c.PUGL_KEY_F9,
+    f10 = c.PUGL_KEY_F10,
+    f11 = c.PUGL_KEY_F11,
+    f12 = c.PUGL_KEY_F12,
+    page_up = c.PUGL_KEY_PAGE_UP,
+    page_down = c.PUGL_KEY_PAGE_DOWN,
+    end = c.PUGL_KEY_END,
+    home = c.PUGL_KEY_HOME,
+    left = c.PUGL_KEY_LEFT,
+    up = c.PUGL_KEY_UP,
+    right = c.PUGL_KEY_RIGHT,
+    down = c.PUGL_KEY_DOWN,
+    print_screen = c.PUGL_KEY_PRINT_SCREEN,
+    insert = c.PUGL_KEY_INSERT,
+    pause = c.PUGL_KEY_PAUSE,
+    menu = c.PUGL_KEY_MENU,
+    num_lock = c.PUGL_KEY_NUM_LOCK,
+    scroll_lock = c.PUGL_KEY_SCROLL_LOCK,
+    caps_lock = c.PUGL_KEY_CAPS_LOCK,
+    shift_l = c.PUGL_KEY_SHIFT_L,
+    shift_r = c.PUGL_KEY_SHIFT_R,
+    ctrl_l = c.PUGL_KEY_CTRL_L,
+    ctrl_r = c.PUGL_KEY_CTRL_R,
+    alt_l = c.PUGL_KEY_ALT_L,
+    alt_r = c.PUGL_KEY_ALT_R,
+    super_l = c.PUGL_KEY_SUPER_L,
+    super_r = c.PUGL_KEY_SUPER_R,
+    keypad_0 = c.PUGL_KEY_PAD_0,
+    keypad_1 = c.PUGL_KEY_PAD_1,
+    keypad_2 = c.PUGL_KEY_PAD_2,
+    keypad_3 = c.PUGL_KEY_PAD_3,
+    keypad_4 = c.PUGL_KEY_PAD_4,
+    keypad_5 = c.PUGL_KEY_PAD_5,
+    keypad_6 = c.PUGL_KEY_PAD_6,
+    keypad_7 = c.PUGL_KEY_PAD_7,
+    keypad_8 = c.PUGL_KEY_PAD_8,
+    keypad_9 = c.PUGL_KEY_PAD_9,
+    keypad_enter = c.PUGL_KEY_PAD_ENTER,
+    keypad_page_up = c.PUGL_KEY_PAD_PAGE_UP,
+    keypad_page_down = c.PUGL_KEY_PAD_PAGE_DOWN,
+    keypad_end = c.PUGL_KEY_PAD_END,
+    keypad_home = c.PUGL_KEY_PAD_HOME,
+    keypad_left = c.PUGL_KEY_PAD_LEFT,
+    keypad_up = c.PUGL_KEY_PAD_UP,
+    keypad_right = c.PUGL_KEY_PAD_RIGHT,
+    keypad_down = c.PUGL_KEY_PAD_DOWN,
+    keypad_clear = c.PUGL_KEY_PAD_CLEAR,
+    keypad_insert = c.PUGL_KEY_PAD_INSERT,
+    keypad_delete = c.PUGL_KEY_PAD_DELETE,
+    keypad_equal = c.PUGL_KEY_PAD_EQUAL,
+    keypad_multiply = c.PUGL_KEY_PAD_MULTIPLY,
+    keypad_add = c.PUGL_KEY_PAD_ADD,
+    keypad_separator = c.PUGL_KEY_PAD_SEPARATOR,
+    keypad_subtract = c.PUGL_KEY_PAD_SUBTRACT,
+    keypad_decimal = c.PUGL_KEY_PAD_DECIMAL,
+    keypad_divide = c.PUGL_KEY_PAD_DIVIDE,
+
+    pub fn int(self: Keycode) u32 {
+        return @intFromEnum(self);
+    }
+};
