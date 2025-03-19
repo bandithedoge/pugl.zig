@@ -261,10 +261,14 @@ pub fn build(b: *std.Build) !void {
         run_tests_step.dependOn(&run_test.step);
     }
 
-    b.installArtifact(pugl);
-    b.installDirectory(.{
+    const docs_step = b.step("docs", "Build API docs");
+    const docs = b.addInstallDirectory(.{
         .source_dir = pugl.getEmittedDocs(),
-        .install_dir = .{ .custom = "docs" },
-        .install_subdir = "",
+        .install_dir = .prefix,
+        .install_subdir = "docs",
     });
+    docs.step.dependOn(&pugl.step);
+    docs_step.dependOn(&docs.step);
+
+    b.installArtifact(pugl);
 }

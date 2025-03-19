@@ -1,19 +1,8 @@
 {
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    zig-overlay = {
-      url = "github:mitchellh/zig-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zls = {
-      url = "github:zigtools/zls/0.14.0";
-      inputs = {
-        zig-overlay.follows = "zig-overlay";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    zig.url = "github:Cloudef/zig2nix";
   };
 
   outputs = inputs @ {flake-parts, ...}:
@@ -22,16 +11,19 @@
       perSystem = {
         pkgs,
         system,
+        self',
         ...
       }: let
-        zig' = inputs.zig-overlay.packages.${system}.master;
+        zigEnv = inputs.zig.outputs.zig-env.${system} {
+          zig = inputs.zig.packages.${system}.zig-0_14_0;
+        };
       in {
-        devShells.default = pkgs.mkShell.override {inherit (zig') stdenv;} {
-          packages = with pkgs; [
-            zig'
-            inputs.zls.packages.${system}.default
+        packages.default = zigEnv.package {
+          pname = "pugl.zig";
+          version = "0.1.0";
+          src = pkgs.lib.cleanSource ./.;
 
-            # glib
+          buildInputs = with pkgs; [
             libGL
             pkg-config
             vulkan-loader
@@ -40,6 +32,14 @@
             xorg.libXext
             xorg.libXrandr
           ];
+        };
+
+        devShells.default = zigEnv.mkShell {
+          nativeBuildInputs = with pkgs; [
+            zls
+          ];
+
+          inherit (self'.packages.default) buildInputs;
         };
       };
     };
