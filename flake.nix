@@ -11,17 +11,13 @@
       perSystem = {
         pkgs,
         system,
-        self',
         ...
-      }: let
-        zigEnv = inputs.zig.outputs.zig-env.${system} {
-          zig = inputs.zig.packages.${system}.zig-0_14_0;
-        };
-      in {
-        packages.default = zigEnv.package {
-          pname = "pugl.zig";
-          version = "0.1.0";
-          src = pkgs.lib.cleanSource ./.;
+      }: {
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            inputs.zig.packages.${system}.zig-0_14_0
+            zls
+          ];
 
           buildInputs = with pkgs; [
             libGL
@@ -32,14 +28,6 @@
             xorg.libXext
             xorg.libXrandr
           ];
-        };
-
-        devShells.default = zigEnv.mkShell {
-          nativeBuildInputs = with pkgs; [
-            zls
-          ];
-
-          inherit (self'.packages.default) buildInputs;
         };
       };
     };
