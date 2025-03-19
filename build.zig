@@ -184,6 +184,7 @@ pub fn build(b: *std.Build) !void {
                 .use_zlib = false,
                 .use_xcb = false,
                 .symbol_lookup = false,
+                .use_glib = false,
             })) |cairo| {
                 const artifact = cairo.artifact("cairo");
 
@@ -234,16 +235,16 @@ pub fn build(b: *std.Build) !void {
         .flags = c_flags.items,
     });
 
+    b.installArtifact(pugl);
+
     const run_tests_step = b.step("test", "Run tests");
 
     const unit_tests = b.addTest(.{
         .target = target,
         .optimize = optimize,
-        .root_source_file = pugl_module.root_source_file.?,
+        .root_module = pugl_module,
     });
-    unit_tests.root_module.addImport("root", pugl_module);
     unit_tests.linkLibrary(pugl);
-    unit_tests.root_module.import_table = pugl_module.import_table;
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
     run_tests_step.dependOn(&run_unit_tests.step);
@@ -267,8 +268,5 @@ pub fn build(b: *std.Build) !void {
         .install_dir = .prefix,
         .install_subdir = "docs",
     });
-    docs.step.dependOn(&pugl.step);
     docs_step.dependOn(&docs.step);
-
-    b.installArtifact(pugl);
 }

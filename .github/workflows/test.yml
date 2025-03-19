@@ -12,5 +12,8 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
+      - name: Check formatting
+        run: nix develop -c zig fmt --check .
+
       - name: Run tests
         run: nix develop -c zig build test -Dopengl=true -Dvulkan=true -Dcairo=true -Dstub=true

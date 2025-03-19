@@ -23,8 +23,8 @@
             .lazy = true,
         },
         .cairo = .{
-            .url = "https://github.com/bandithedoge/cairo.zig/archive/4e3207c8527c6e59abec060c440897e174127b22.tar.gz",
-            .hash = "cairo_zig-1.18.4-GbxI8QZbAQA4Q-MDdF6dHLQo_rV2MYUIEVNF9g8Y26ge",
+            .url = "https://github.com/bandithedoge/cairo.zig/archive/ff24b2f9ed4197f21973c8a6d0224a0619a4ebd6.tar.gz",
+            .hash = "cairo_zig-1.18.4-GbxI8TlbAQC-NSwt5RFIcLBH-CTAX6gBan-TkSFulrsP",
             .lazy = true,
         },
     },
