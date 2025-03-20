@@ -41,20 +41,6 @@ pub fn build(b: *std.Build) !void {
 
     const pugl_dep = b.dependency("pugl", .{});
 
-    const pugl = b.addStaticLibrary(.{
-        .name = "pugl",
-        .target = target,
-        .optimize = optimize,
-        .root_source_file = b.path("src/pugl.zig"),
-        .link_libc = true,
-    });
-
-    pugl.linkSystemLibrary("m");
-
-    pugl.addIncludePath(pugl_dep.path("include"));
-    pugl.installHeadersDirectory(pugl_dep.path("include"), "", .{});
-    pugl.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
-
     const pugl_module = b.addModule("pugl", .{
         .target = target,
         .optimize = optimize,
@@ -63,7 +49,18 @@ pub fn build(b: *std.Build) !void {
         .imports = &.{.{ .name = "pugl_options", .module = options_step.createModule() }},
     });
 
-    pugl_module.linkLibrary(pugl);
+    const pugl = b.addStaticLibrary(.{
+        .name = "pugl",
+        .root_source_file = pugl_module.root_source_file,
+        .target = target,
+        .optimize = optimize,
+    });
+
+    pugl.linkSystemLibrary("m");
+
+    pugl.addIncludePath(pugl_dep.path("include"));
+    pugl.installHeadersDirectory(pugl_dep.path("include"), "", .{});
+    pugl.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
 
     switch (platform) {
         .x11 => {
@@ -235,15 +232,17 @@ pub fn build(b: *std.Build) !void {
         .flags = c_flags.items,
     });
 
-    b.installArtifact(pugl);
+    const install_pugl = b.addInstallArtifact(pugl, .{});
+    b.getInstallStep().dependOn(&install_pugl.step);
 
     const run_tests_step = b.step("test", "Run tests");
 
     const unit_tests = b.addTest(.{
         .target = target,
         .optimize = optimize,
-        .root_module = pugl_module,
+        .root_source_file = pugl_module.root_source_file,
     });
+    unit_tests.step.dependOn(&install_pugl.step);
     unit_tests.linkLibrary(pugl);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
@@ -263,11 +262,11 @@ pub fn build(b: *std.Build) !void {
     }
 
     const docs_step = b.step("docs", "Build API docs");
-    const docs = b.addInstallDirectory(.{
+    const install_docs = b.addInstallDirectory(.{
         .source_dir = pugl.getEmittedDocs(),
         .install_dir = .prefix,
         .install_subdir = "docs",
     });
-    docs.step.dependOn(&pugl.step);
-    docs_step.dependOn(&docs.step);
+    install_docs.step.dependOn(&install_pugl.step);
+    docs_step.dependOn(&install_docs.step);
 }
