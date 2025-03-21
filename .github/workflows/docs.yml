@@ -14,7 +14,10 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Build docs
-        run: nix develop -c zig build docs
+        run: |
+          # HACK: weird cache things happen when building just the docs
+          nix develop -c zig build
+          nix develop -c zig build docs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

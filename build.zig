@@ -41,7 +41,7 @@ pub fn build(b: *std.Build) !void {
 
     const pugl_dep = b.dependency("pugl", .{});
 
-    const pugl_module = b.addModule("pugl", .{
+    const pugl_module = b.createModule(.{
         .target = target,
         .optimize = optimize,
         .root_source_file = b.path("src/pugl.zig"),
@@ -232,17 +232,15 @@ pub fn build(b: *std.Build) !void {
         .flags = c_flags.items,
     });
 
-    const install_pugl = b.addInstallArtifact(pugl, .{});
-    b.getInstallStep().dependOn(&install_pugl.step);
+    b.installArtifact(pugl);
 
     const run_tests_step = b.step("test", "Run tests");
 
     const unit_tests = b.addTest(.{
         .target = target,
         .optimize = optimize,
-        .root_source_file = pugl_module.root_source_file,
+        .root_module = pugl_module,
     });
-    unit_tests.step.dependOn(&install_pugl.step);
     unit_tests.linkLibrary(pugl);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
@@ -267,6 +265,5 @@ pub fn build(b: *std.Build) !void {
         .install_dir = .prefix,
         .install_subdir = "docs",
     });
-    install_docs.step.dependOn(&install_pugl.step);
     docs_step.dependOn(&install_docs.step);
 }
