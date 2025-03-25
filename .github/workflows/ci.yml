@@ -16,7 +16,10 @@ jobs:
       - name: Check formatting
         run: nix develop -c zig fmt --check .
 
-      - run: nix build
+      - name: Build
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          nix build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
