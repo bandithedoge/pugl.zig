@@ -10,16 +10,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Disable AppArmor
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Check formatting
         run: nix develop -c zig fmt --check .
 
-      - name: Build
-        run: |
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-          nix build
+      - run: nix build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
