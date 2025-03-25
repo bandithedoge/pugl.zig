@@ -1,0 +1,98 @@
+{
+  "N-V-__8AALnoDwD8UNMf-78hqKYkPF8CW2YGKgPFTo-VHunz": {
+    "name": "pugl",
+    "url": "https://gitlab.com/lv2/pugl/-/archive/66afe808e8c17f41cf6122158df96361cb42cccb/pugl-66afe808e8c17f41cf6122158df96361cb42cccb.tar.gz",
+    "hash": "sha256-1gsQl0hQCrzGLNxXarfxuFd5tWu1yHIEzUHRznwWDY0="
+  },
+  "N-V-__8AACbnQQAIOzaeAZpe-9GIpYoldZwJoSbhhHIA_56I": {
+    "name": "x11",
+    "url": "https://github.com/hexops/x11-headers/archive/bc049ff07d31014d4d409cc328c3feb57c9b9a83.tar.gz",
+    "hash": "sha256-G1nqFsWSQ5wOiKagy53jpiHesDpYU4kUSbrzi3er4tw="
+  },
+  "N-V-__8AABmuIwDDA1C3tF9GI66vHFssnO2l1ibeL_Wj8vVO": {
+    "name": "opengl",
+    "url": "https://github.com/hexops/opengl-headers/archive/d0b37fdc3b039ba5b430110545f398f0278c5396.tar.gz",
+    "hash": "sha256-AMZLidycaj5OfHuLYtxYFP4dM0OkzS566Ff3g3AF2IY="
+  },
+  "N-V-__8AAAIGzwCa4tCHc1jhxfgWaL73kQkckQuQ2WA2XWI5": {
+    "name": "vulkan",
+    "url": "https://github.com/hexops/vulkan-headers/archive/68ab446d1fa0707bb7082c95c51d33a731cafac2.tar.gz",
+    "hash": "sha256-yoHFITAWm9H4l51PIpRpxhU+xjk5hCYcgxQnB7rLYH0="
+  },
+  "cairo_zig-1.18.4-GbxI8QpbAQD1mm-pi1QJuwYmxvhdVf0K1XhMEFlgsVhb": {
+    "name": "cairo",
+    "url": "https://github.com/bandithedoge/cairo.zig/archive/bfc51c8232486ed21e83e020711aa039c7b6bc04.tar.gz",
+    "hash": "sha256-S4vW2oaNO1oASJiQHK8XoEL1qFfwwMZ82ivUN3W2Uqk="
+  },
+  "N-V-__8AAFW9nwOvQAmLG664NOHF67FmS00qy_Lhg72aEv9Q": {
+    "name": "cairo",
+    "url": "https://www.cairographics.org/releases/cairo-1.18.4.tar.xz",
+    "hash": "sha256-RF7YIIpuSCPeEianTKMZ02AOg/Y2n5mxQmUAZZnDLMs="
+  },
+  "pixman-0.0.0-9hepuMcHAADs81NS83ux0N4W1T2b1r3XxV16jCrghjPK": {
+    "name": "pixman",
+    "url": "https://github.com/bandithedoge/pixman/archive/80475c32cc85a4f3cae6dd548e2b4eff845436bd.tar.gz",
+    "hash": "sha256-iVLFwB5V0JMnK2Pzq+J7HMZ3dHd8L7w2PEnJyuFLWFo="
+  },
+  "N-V-__8AACdzQgB3Xt60BggeOhQybqmqPiqfBgmabFAL8LPJ": {
+    "name": "pixman",
+    "url": "https://cairographics.org/releases/pixman-0.42.2.tar.gz",
+    "hash": "sha256-6hSA762i/ZSLx1Nm98NJ4cltMpfQmj/mJibjjiNKYl4="
+  },
+  "freetype-0.0.0-2bU4KiBJcwBfuCoK33E7c6OJynXCvaTBtRyI68c42A1O": {
+    "name": "freetype",
+    "url": "https://github.com/bandithedoge/freetype/archive/3d0618154d7b0797b22688e9bda3753270e76462.tar.gz",
+    "hash": "sha256-SV/zjSM7WZalCDEDMM7Smr+4MbQIKXt8M+AHArJGmuo="
+  },
+  "N-V-__8AAKgyIgAxeJp8Y2TC-ZFkwRg2Ybtf6RStczbMIkA5": {
+    "name": "brotli",
+    "url": "https://pkg.machengine.org/brotli/10961426f03016e273f4f4653eae907e9e2339b6.tar.gz",
+    "hash": "sha256-fKHDFopY8WCcOO3/5eR/qTFoUX8nt8ARjKcGtVhpyXo="
+  },
+  "zlib-1.3.1-ZZQ7lVgMAACwO4nUUd8GLhsuQ5JQq_VAhlEiENJTUv6h": {
+    "name": "zlib",
+    "url": "https://github.com/allyourcodebase/zlib/archive/6c72830882690c1eb2567a537525c3f432c1da50.tar.gz",
+    "hash": "sha256-4WM8WhXETXvK/c+rV6kCL7vFbYuT62Zde5vgsqucJsE="
+  },
+  "N-V-__8AAB0eQwD-0MdOEBmz7intriBReIsIDNlukNVoNu6o": {
+    "name": "zlib",
+    "url": "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
+    "hash": "sha256-F+iIY/NgBnKrSRgvIXKBtvxNPHYr3jYZNeQ2qVIU0Fw="
+  },
+  "libpng-1.6.43-oiaFGlwqAAC_FTbIqUxyNhS5-yP_0h-YabxhZZ8w95No": {
+    "name": "libpng",
+    "url": "https://github.com/bandithedoge/libpng/archive/33f96680cfcbbf563f95efc6b6577374c15708eb.tar.gz",
+    "hash": "sha256-LN1pbQ0YD64wocU2+X4qSptoq2jK8NL2WfJw2qmdsaA="
+  },
+  "N-V-__8AAJrvXQCqAT8Mg9o_tk6m0yf5Fz-gCNEOKLyTSerD": {
+    "name": "libpng",
+    "url": "https://github.com/glennrp/libpng/archive/refs/tags/v1.6.43.tar.gz",
+    "hash": "sha256-/syVtGzwXo4/yKQUdQ4LparQDYnp/fF16U/wQcrxoDo="
+  },
+  "zlib-1.3.1-AAAAACEMAAA0qyoSrfgBb_p25ItL4yRf_TBRk-26TYMF": {
+    "name": "zlib",
+    "url": "https://github.com/allyourcodebase/zlib/archive/refs/tags/1.3.1.tar.gz",
+    "hash": "sha256-a1h4xVMvGnlglQ6MXIXGadr99EDE5NWsDY2Cso9Yfqo="
+  },
+  "1220fed0c74e1019b3ee29edae2051788b080cd96e90d56836eea857b0b966742efb": {
+    "name": "zlib",
+    "url": "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
+    "hash": "sha256-F+iIY/NgBnKrSRgvIXKBtvxNPHYr3jYZNeQ2qVIU0Fw="
+  },
+  "12201149afb3326c56c05bb0a577f54f76ac20deece63aa2f5cd6ff31a4fa4fcb3b7": {
+    "name": "fontconfig",
+    "url": "https://deps.files.ghostty.org/fontconfig-2.14.2.tar.gz",
+    "hash": "sha256-O6LdkhWHGKzsXKrxpxYEO1qgVcJ7CB2RSvPMtA3OilU="
+  },
+  "libexpat-2.6.4-AAAAAAw1AAAcTQL6LeoXAmCOqTtECXixtfWNy99iTNYn": {
+    "name": "expat",
+    "url": "https://github.com/allyourcodebase/libexpat/archive/57aa500f8c9f6701044a5fd0ac5d730d36f800cd.tar.gz",
+    "hash": "sha256-k1QHxUhNWSTAjdtpps9UW8QaZs4Uh5fbSQ0zAcXf7Dw="
+  },
+  "122023634c5939c209cbc4e27867707244abfd08d1234aeeda686fbe1a65435dd531": {
+    "name": "libexpat",
+    "url": "git+https://github.com/libexpat/libexpat.git?ref=R_2_6_4#2691aff4304a6d7e053199c205620136481b9dd1",
+    "hash": "sha256-ek8/3c8bKG+z7fIM+QCNsH7eoVGAt7z3bXBHZ3QjlS8=",
+    "rev": "2691aff4304a6d7e053199c205620136481b9dd1"
+  }
+}

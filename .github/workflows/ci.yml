@@ -13,11 +13,10 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Build docs
-        run: |
-          # HACK: weird cache things happen when building just the docs
-          nix develop -c zig build
-          nix develop -c zig build docs
+      - name: Check formatting
+        run: nix develop -c zig fmt --check .
+
+      - run: nix build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -25,7 +24,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "zig-out/docs"
+          path: "result/docs"
 
       - name: Deploy to GitHub Pages
         id: deployment
