@@ -189,8 +189,7 @@ pub fn build(b: *std.Build) !void {
                 pugl.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
                 b.installArtifact(artifact);
             }
-        } else
-            pugl.linkSystemLibrary("cairo");
+        } else pugl.linkSystemLibrary("cairo");
 
         pugl.addCSourceFile(.{
             .file = pugl_dep.path(b.fmt("src/{s}_cairo.{s}", .{ @tagName(platform), c_src_ext })),
