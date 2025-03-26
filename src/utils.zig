@@ -1,5 +1,5 @@
 const pugl = @import("./pugl.zig");
-const c = @import("c.zig");
+const c = @import("c");
 
 pub inline fn errFromStatus(status: c.PuglStatus) pugl.Error!void {
     if (status == c.PUGL_SUCCESS) return;

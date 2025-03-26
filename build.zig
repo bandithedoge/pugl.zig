@@ -41,12 +41,22 @@ pub fn build(b: *std.Build) !void {
 
     const pugl_dep = b.dependency("pugl", .{});
 
-    const pugl_module = b.createModule(.{
+    const pugl_c = b.addTranslateC(.{
+        .target = target,
+        .optimize = optimize,
+        .root_source_file = pugl_dep.path("include/pugl/pugl.h"),
+    });
+    pugl_c.addIncludePath(pugl_dep.path("include"));
+
+    const pugl_module = b.addModule("pugl", .{
         .target = target,
         .optimize = optimize,
         .root_source_file = b.path("src/pugl.zig"),
         .link_libc = true,
-        .imports = &.{.{ .name = "pugl_options", .module = options_step.createModule() }},
+        .imports = &.{
+            .{ .name = "pugl_options", .module = options_step.createModule() },
+            .{ .name = "c", .module = pugl_c.addModule("c") },
+        },
     });
 
     const pugl = b.addStaticLibrary(.{

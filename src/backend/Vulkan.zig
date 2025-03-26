@@ -6,14 +6,15 @@
 //! and a portable function to create a Vulkan surface for a view, which hides the platform-specific implementation details.
 
 const pugl = @import("../pugl.zig");
-const c = @import("../c.zig");
+const pugl_c = @import("c");
+const c = @cImport(@cInclude("pugl/vulkan.h"));
 
 const errFromStatus = @import("../utils.zig").errFromStatus;
 
 const Vulkan = @This();
 
 parent_view: *const pugl.View,
-backend: *const c.PuglBackend,
+backend: *const pugl_c.PuglBackend,
 vulkan_loader: *c.PuglVulkanLoader,
 
 /// This dynamically loads the Vulkan library and gets the load functions from it.
@@ -26,7 +27,7 @@ vulkan_loader: *c.PuglVulkanLoader,
 pub fn new(view: *const pugl.View, library_name: ?[:0]const u8) error{Failure}!Vulkan {
     return .{
         .parent_view = view,
-        .backend = c.puglVulkanBackend().?,
+        .backend = @ptrCast(c.puglVulkanBackend().?),
         .vulkan_loader = c.puglNewVulkanLoader(
             view.getWorld().world,
             if (library_name) |name| name.ptr else null,

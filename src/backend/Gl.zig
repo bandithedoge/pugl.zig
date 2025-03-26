@@ -1,19 +1,23 @@
 //! OpenGL graphics support.
 
 const pugl = @import("../pugl.zig");
-const c = @import("../c.zig");
+const pugl_c = @import("c");
+const c = @cImport({
+    @cDefine("PUGL_NO_INCLUDE_GL_H", "1");
+    @cInclude("pugl/gl.h");
+});
 
 const errFromStatus = @import("../utils.zig").errFromStatus;
 
 const Gl = @This();
 
 parent_view: *const pugl.View,
-backend: *const c.PuglBackend,
+backend: *const pugl_c.PuglBackend,
 
 pub fn new(view: *const pugl.View) Gl {
     return .{
         .parent_view = view,
-        .backend = c.puglGlBackend().?,
+        .backend = @ptrCast(c.puglGlBackend().?),
     };
 }
 

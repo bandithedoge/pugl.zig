@@ -1,6 +1,6 @@
 const std = @import("std");
 const pugl = @import("./pugl.zig");
-const c = @import("c.zig");
+const c = @import("c");
 
 const utils = @import("./utils.zig");
 const errFromStatus = utils.errFromStatus;

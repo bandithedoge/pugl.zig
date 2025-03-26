@@ -3,7 +3,7 @@ const builtin = @import("builtin");
 
 const options = @import("pugl_options");
 
-const c = @import("c.zig");
+const c = @import("c");
 pub const event = @import("event.zig");
 pub const Keycode = @import("keycode.zig").Keycode;
 pub const View = @import("View.zig");

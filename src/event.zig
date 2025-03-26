@@ -1,5 +1,5 @@
 const std = @import("std");
-const c = @import("c.zig");
+const c = @import("c");
 const View = @import("View.zig");
 
 pub const Type = enum(c_uint) {
