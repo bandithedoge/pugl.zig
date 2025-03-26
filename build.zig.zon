@@ -7,21 +7,6 @@
             .url = "https://gitlab.com/lv2/pugl/-/archive/66afe808e8c17f41cf6122158df96361cb42cccb/pugl-66afe808e8c17f41cf6122158df96361cb42cccb.tar.gz",
             .hash = "N-V-__8AALnoDwD8UNMf-78hqKYkPF8CW2YGKgPFTo-VHunz",
         },
-        .x11 = .{
-            .url = "https://github.com/hexops/x11-headers/archive/bc049ff07d31014d4d409cc328c3feb57c9b9a83.tar.gz",
-            .hash = "N-V-__8AACbnQQAIOzaeAZpe-9GIpYoldZwJoSbhhHIA_56I",
-            .lazy = true,
-        },
-        .opengl = .{
-            .url = "https://github.com/hexops/opengl-headers/archive/d0b37fdc3b039ba5b430110545f398f0278c5396.tar.gz",
-            .hash = "N-V-__8AABmuIwDDA1C3tF9GI66vHFssnO2l1ibeL_Wj8vVO",
-            .lazy = true,
-        },
-        .vulkan = .{
-            .url = "https://github.com/hexops/vulkan-headers/archive/68ab446d1fa0707bb7082c95c51d33a731cafac2.tar.gz",
-            .hash = "N-V-__8AAAIGzwCa4tCHc1jhxfgWaL73kQkckQuQ2WA2XWI5",
-            .lazy = true,
-        },
         .cairo = .{
             .url = "https://github.com/bandithedoge/cairo.zig/archive/bfc51c8232486ed21e83e020711aa039c7b6bc04.tar.gz",
             .hash = "cairo_zig-1.18.4-GbxI8QpbAQD1mm-pi1QJuwYmxvhdVf0K1XhMEFlgsVhb",

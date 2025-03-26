@@ -64,12 +64,6 @@ pub fn build(b: *std.Build) !void {
 
     switch (platform) {
         .x11 => {
-            if (b.lazyDependency("x11", .{
-                .target = target,
-                .optimize = optimize,
-            })) |x11|
-                pugl.linkLibrary(x11.artifact("x11-headers"));
-
             pugl.linkSystemLibrary("x11");
 
             try c_flags.append("-D_POSIX_C_SOURCE=200809L");
@@ -132,12 +126,6 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_opengl) {
-        if (b.lazyDependency("opengl", .{
-            .target = target,
-            .optimize = optimize,
-        })) |opengl|
-            pugl.linkLibrary(opengl.artifact("opengl-headers"));
-
         pugl.linkSystemLibrary("gl");
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
@@ -150,14 +138,6 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_vulkan) {
-        if (b.lazyDependency("vulkan", .{
-            .target = target,
-            .optimize = optimize,
-        })) |vulkan| {
-            pugl.linkLibrary(vulkan.artifact("vulkan-headers"));
-            pugl.installHeadersDirectory(vulkan.path("include"), "", .{});
-        }
-
         pugl.linkSystemLibrary("vulkan");
 
         pugl.addCSourceFile(.{
