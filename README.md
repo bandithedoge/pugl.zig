@@ -32,7 +32,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
         // choose your desired backends
         // multiple can be enabled and selected at runtime
-        .opengl = false,
+        .opengl = true,
         .vulkan = false,
         .cairo = false,
         .stub = false,
@@ -40,6 +40,8 @@ pub fn build(b: *std.Build) !void {
     });
 
     my_exe.root_module.addImport("pugl", pugl.module("pugl"));
+    // replace `opengl` with your desired backend
+    my_exe.root_module.addImport("backend_opengl", pugl.module("backend_opengl"));
 
     // ...
 }
@@ -49,6 +51,8 @@ In your source file:
 
 ```zig
 const pugl = @import("pugl");
+// replace with your desired backend, make sure it's enabled in build.zig!
+const OpenGlBackend = @import("backend_opengl");
 
 pub fn main() !void {
     // ...
@@ -64,8 +68,7 @@ pub fn main() !void {
 
     view.setHandle(&my_app_struct); // optional
 
-    // replace `Gl` with your desired backend, make sure it's enabled in `build.zig`
-    const backend = pugl.Backend.Gl.new();
+    const backend = OpenGlBackend.new();
     try view.setBackend(backend.backend);
 
     try view.setEventFunc(onEvent);

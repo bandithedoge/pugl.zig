@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const gl = @import("gl");
+const OpenGlBackend = @import("backend_opengl");
 const pugl = @import("pugl");
 
 const Options = @import("Options.zig");
@@ -21,7 +22,7 @@ const App = struct {
 };
 
 fn getProcAddress(name: [*:0]const u8) ?*const anyopaque {
-    return pugl.Backend.Gl.getProcAddress(std.mem.span(name));
+    return OpenGlBackend.getProcAddress(std.mem.span(name));
 }
 
 pub fn main() !void {
@@ -40,7 +41,7 @@ pub fn main() !void {
     try view.setSizeHint(.minimum, .{ .width = 128, .height = 64 });
     try view.setSizeHint(.maximum, .{ .width = 512, .height = 256 });
 
-    const backend = pugl.Backend.Gl.new(&view);
+    const backend = OpenGlBackend.new(&view);
     try view.setBackend(backend.backend);
 
     if (!procs.init(getProcAddress))

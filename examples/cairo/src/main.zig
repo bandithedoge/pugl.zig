@@ -1,5 +1,6 @@
 const std = @import("std");
 
+const CairoBackend = @import("backend_cairo");
 const pugl = @import("pugl");
 
 const c = @import("c.zig");
@@ -40,7 +41,7 @@ pub fn main() !void {
     try view.setBoolHint(.resizable, app.options.resizable);
     view.setHandle(@ptrCast(&app));
 
-    const backend = pugl.Backend.Cairo.new();
+    const backend = CairoBackend.new();
     try view.setBackend(backend.backend);
 
     try view.setBoolHint(.ignore_key_repeat, app.options.ignore_key_repeat);

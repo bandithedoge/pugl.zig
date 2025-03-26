@@ -20,6 +20,7 @@ pub fn build(b: *std.Build) !void {
     });
 
     exe.root_module.addImport("pugl", pugl.module("pugl"));
+    exe.root_module.addImport("backend_cairo", pugl.module("backend_cairo"));
 
     // pugl provides its bundled version of cairo when `build_cairo = true` (default)
     exe.linkLibrary(pugl.artifact("cairo"));

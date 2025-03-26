@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const gl = @import("gl");
+const OpenGlBackend = @import("backend_opengl");
 const pugl = @import("pugl");
 
 const cube = @import("cube.zig");
@@ -66,7 +67,7 @@ pub fn main() !void {
     try app.parent.setEventFunc(onParentEvent);
     try app.parent.setStringHint(.window_title, "Pugl Prüfung");
 
-    const parent_backend = pugl.Backend.Gl.new(&app.parent);
+    const parent_backend = OpenGlBackend.new(&app.parent);
     try app.parent.setBackend(parent_backend.backend);
 
     try app.parent.realize();
@@ -92,7 +93,7 @@ pub fn main() !void {
     app.child.setHandle(&app);
     try app.child.setEventFunc(onChildEvent);
 
-    const child_backend = pugl.Backend.Gl.new(&app.child);
+    const child_backend = OpenGlBackend.new(&app.child);
     try app.child.setBackend(child_backend.backend);
 
     try app.child.realize();
@@ -252,7 +253,7 @@ fn onKeyPress(view: *const pugl.View, e: pugl.event.Key) pugl.Error!void {
 }
 
 fn getProcAddress(name: [*:0]const u8) ?*const anyopaque {
-    return pugl.Backend.Gl.getProcAddress(std.mem.span(name));
+    return OpenGlBackend.getProcAddress(std.mem.span(name));
 }
 
 const background_vertices = [_]f32{

@@ -2,11 +2,11 @@
 //!
 //! This backend just creates a simple native window without setting up any portable graphics API.
 
-const pugl = @import("../pugl.zig");
+const pugl = @import("pugl");
+const errFromStatus = pugl.utils.errFromStatus;
 const pugl_c = @import("c");
-const c = @cImport(@cInclude("pugl/stub.h"));
 
-const errFromStatus = @import("../utils.zig").errFromStatus;
+const c = @cImport(@cInclude("pugl/stub.h"));
 
 const Stub = @This();
 

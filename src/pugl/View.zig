@@ -4,7 +4,7 @@ const c = @import("c");
 const options = @import("pugl_options");
 const event = @import("event.zig");
 
-const utils = @import("./utils.zig");
+const utils = @import("utils.zig");
 const errFromStatus = utils.errFromStatus;
 const statusFromErr = utils.statusFromErr;
 

@@ -18,6 +18,7 @@ pub fn build(b: *std.Build) !void {
     });
 
     exe.root_module.addImport("pugl", pugl.module("pugl"));
+    exe.root_module.addImport("backend_opengl", pugl.module("backend_opengl"));
 
     const gl = @import("zigglgen").generateBindingsModule(b, .{
         .api = .gl,

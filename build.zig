@@ -47,15 +47,16 @@ pub fn build(b: *std.Build) !void {
         .root_source_file = pugl_dep.path("include/pugl/pugl.h"),
     });
     pugl_c.addIncludePath(pugl_dep.path("include"));
+    const pugl_c_module = pugl_c.addModule("c");
 
     const pugl_module = b.addModule("pugl", .{
         .target = target,
         .optimize = optimize,
-        .root_source_file = b.path("src/pugl.zig"),
+        .root_source_file = b.path("src/pugl/pugl.zig"),
         .link_libc = true,
         .imports = &.{
             .{ .name = "pugl_options", .module = options_step.createModule() },
-            .{ .name = "c", .module = pugl_c.addModule("c") },
+            .{ .name = "c", .module = pugl_c_module },
         },
     });
 
@@ -136,10 +137,21 @@ pub fn build(b: *std.Build) !void {
         },
     }
 
+    const backend_imports: []const std.Build.Module.Import = &.{
+        .{ .name = "pugl", .module = pugl_module },
+        .{ .name = "c", .module = pugl_c_module },
+    };
+
     if (options.backend_opengl) {
         pugl.linkSystemLibrary("gl");
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
+
+        const opengl_module = b.addModule("backend_opengl", .{
+            .root_source_file = b.path("src/backend/opengl.zig"),
+            .imports = backend_imports,
+        });
+        opengl_module.linkLibrary(pugl);
 
         try tests.appendSlice(&.{
             "gl",
@@ -160,6 +172,12 @@ pub fn build(b: *std.Build) !void {
             pugl.linkFramework("Metal");
             pugl.linkFramework("QuartzCore");
         }
+
+        const vulkan_module = b.addModule("backend_vulkan", .{
+            .root_source_file = b.path("src/backend/vulkan.zig"),
+            .imports = backend_imports,
+        });
+        vulkan_module.linkLibrary(pugl);
 
         try tests.append("vulkan");
     }
@@ -187,6 +205,12 @@ pub fn build(b: *std.Build) !void {
             .flags = c_flags.items,
         });
 
+        const cairo_module = b.addModule("backend_cairo", .{
+            .root_source_file = b.path("src/backend/cairo.zig"),
+            .imports = backend_imports,
+        });
+        cairo_module.linkLibrary(pugl);
+
         try tests.append("cairo");
     }
 
@@ -195,6 +219,12 @@ pub fn build(b: *std.Build) !void {
             .file = pugl_dep.path(b.fmt("src/{s}_stub.{s}", .{ @tagName(platform), c_src_ext })),
             .flags = c_flags.items,
         });
+
+        const stub_module = b.addModule("backend_stub", .{
+            .root_source_file = b.path("src/backend/stub.zig"),
+            .imports = backend_imports,
+        });
+        stub_module.linkLibrary(pugl);
 
         try tests.appendSlice(&.{
             "cursor",

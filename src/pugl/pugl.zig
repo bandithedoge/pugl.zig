@@ -1,49 +1,18 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
+const c = @import("c");
 const options = @import("pugl_options");
 
-const c = @import("c");
 pub const event = @import("event.zig");
 pub const Keycode = @import("keycode.zig").Keycode;
+pub const utils = @import("utils.zig");
 pub const View = @import("View.zig");
 pub const World = @import("World.zig");
 
 pub const Backend = struct {
     view: *const View,
     backend: *const c.PuglBackend,
-
-    pub const Gl = if (!options.backend_opengl)
-        if (builtin.is_test)
-            null
-        else
-            @compileError("OpenGL backend not enabled")
-    else
-        @import("backend/Gl.zig");
-
-    pub const Vulkan = if (!options.backend_vulkan)
-        if (builtin.is_test)
-            null
-        else
-            @compileError("Vulkan backend not enabled")
-    else
-        @import("backend/Vulkan.zig");
-
-    pub const Cairo = if (!options.backend_cairo)
-        if (builtin.is_test)
-            null
-        else
-            @compileError("Cairo backend not enabled")
-    else
-        @import("backend/Cairo.zig");
-
-    pub const Stub = if (!options.backend_stub)
-        if (builtin.is_test)
-            null
-        else
-            @compileError("Stub backend not enabled")
-    else
-        @import("backend/Stub.zig");
 };
 
 pub const Error = error{

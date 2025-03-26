@@ -1,7 +1,8 @@
 //! Cairo graphics support.
 
-const pugl = @import("../pugl.zig");
+const pugl = @import("pugl");
 const pugl_c = @import("c");
+
 const c = @cImport(@cInclude("pugl/cairo.h"));
 
 const Cairo = @This();

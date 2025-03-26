@@ -1,8 +1,8 @@
 const std = @import("std");
-const pugl = @import("./pugl.zig");
+const pugl = @import("pugl.zig");
 const c = @import("c");
 
-const utils = @import("./utils.zig");
+const utils = @import("utils.zig");
 const errFromStatus = utils.errFromStatus;
 
 world: *c.PuglWorld,

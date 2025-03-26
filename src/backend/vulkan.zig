@@ -5,11 +5,11 @@
 //! Pugl only provides a minimal loader for loading the Vulkan library,
 //! and a portable function to create a Vulkan surface for a view, which hides the platform-specific implementation details.
 
-const pugl = @import("../pugl.zig");
+const pugl = @import("pugl");
+const errFromStatus = pugl.utils.errFromStatus;
 const pugl_c = @import("c");
-const c = @cImport(@cInclude("pugl/vulkan.h"));
 
-const errFromStatus = @import("../utils.zig").errFromStatus;
+const c = @cImport(@cInclude("pugl/vulkan.h"));
 
 const Vulkan = @This();
 
