@@ -16,32 +16,44 @@
       }: let
         zigEnv = inputs.zig2nix.zig-env.${system} {};
       in {
-        packages.default = zigEnv.package {
-          src = pkgs.lib.cleanSource ./.;
+        packages = rec {
+          default = pkgs.makeOverridable ({
+            withOpenGl ? true,
+            withVulkan ? true,
+            withCairo ? true,
+            withStub ? true,
+            cairo ? null,
+          }:
+            zigEnv.package {
+              src = pkgs.lib.cleanSource ./.;
 
-          nativeBuildInputs = with pkgs; [
-            python3
-          ];
+              nativeBuildInputs = with pkgs; [
+                python3
+              ];
 
-          buildInputs = with pkgs; [
-            cairo
-            libGL
-            pkg-config
-            vulkan-loader
-            xorg.libX11
-            xorg.libXcursor
-            xorg.libXext
-            xorg.libXrandr
-          ];
+              buildInputs = with pkgs; [
+                cairo
+                libGL
+                pkg-config
+                vulkan-loader
+                xorg.libX11
+                xorg.libXcursor
+                xorg.libXext
+                xorg.libXrandr
+              ];
 
-          zigBuildFlags = [
-            "docs"
-            "-Dopengl=true"
-            "-Dvulkan=true"
-            "-Dcairo=true"
-            "-Dbuild_cairo=false"
-            "-Dstub=true"
-          ];
+              zigBuildFlags =
+                pkgs.lib.optional withOpenGl "-Dopengl=true"
+                ++ pkgs.lib.optional withVulkan "-Dvulkan=true"
+                ++ pkgs.lib.optional withCairo "-Dcairo=true"
+                ++ pkgs.lib.optional (cairo != null) "-Dbuild_cairo=false"
+                ++ pkgs.lib.optional withStub "-Dstub=true";
+            }) {};
+
+          docs = (default.override {cairo = pkgs.cairo;}).overrideAttrs (old: {
+            pname = "pugl-docs";
+            zigBuildFlags = ["docs"] ++ old.zigBuildFlags;
+          });
         };
 
         devShells.default = zigEnv.mkShell {
