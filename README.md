@@ -5,6 +5,7 @@ Zig bindings for [Pugl](https://gitlab.com/lv2/pugl), a minimal portable API for
 - Zig 0.14.0
 - X11 platform:
   - libX11
+  - libXrender
   - libXcursor (optional, `-Dxcursor=true`)
   - libXrandr (optional, `-Dxrandr=true`)
   - libXext (optional, `-Dxsync=true`)

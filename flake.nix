@@ -40,6 +40,7 @@
                 xorg.libXcursor
                 xorg.libXext
                 xorg.libXrandr
+                xorg.libXrender
               ];
 
               zigBuildFlags =
@@ -63,7 +64,7 @@
             zls
           ];
 
-          inherit (self'.packages.default) buildInputs;
+          buildInputs = self'.packages.default.buildInputs ++ (with pkgs; [cairo]);
         };
       };
     };

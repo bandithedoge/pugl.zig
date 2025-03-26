@@ -65,6 +65,7 @@ pub fn build(b: *std.Build) !void {
     switch (platform) {
         .x11 => {
             pugl.linkSystemLibrary("x11");
+            pugl.linkSystemLibrary("xrender");
 
             try c_flags.append("-D_POSIX_C_SOURCE=200809L");
 
