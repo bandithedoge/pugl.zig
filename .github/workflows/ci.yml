@@ -19,9 +19,7 @@ jobs:
       - name: Check formatting
         run: nix develop -c zig fmt --check .
 
-      - run: nix build
-
-      - run: nix build docs
+      - run: nix build .#docs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
