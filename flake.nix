@@ -51,12 +51,10 @@
                 ++ pkgs.lib.optional withStub "-Dstub=true";
             }) {};
 
-          docs =
-            (default.override {inherit (pkgs) cairo;})
-            .overrideAttrs (old: {
-              pname = "pugl-docs";
-              zigBuildFlags = ["docs"] ++ old.zigBuildFlags;
-            });
+          docs = default.overrideAttrs (old: {
+            pname = "pugl-docs";
+            zigBuildFlags = ["docs"] ++ old.zigBuildFlags;
+          });
         };
 
         devShells.default = zigEnv.mkShell {
