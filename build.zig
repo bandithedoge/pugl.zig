@@ -196,7 +196,6 @@ pub fn build(b: *std.Build) !void {
 
                 pugl.linkLibrary(artifact);
                 pugl.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
-                b.installArtifact(artifact);
             }
         } else pugl.linkSystemLibrary("cairo");
 

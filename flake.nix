@@ -5,7 +5,11 @@
     zig2nix.url = "github:Cloudef/zig2nix";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {
+    flake-parts,
+    zig2nix,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
       perSystem = {
@@ -14,7 +18,9 @@
         self',
         ...
       }: let
-        zigEnv = inputs.zig2nix.zig-env.${system} {};
+        zigEnv = zig2nix.zig-env.${system} {
+          zig = zig2nix.packages.${system}.zig-master;
+        };
       in {
         packages = rec {
           default = pkgs.makeOverridable ({
