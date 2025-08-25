@@ -4,80 +4,77 @@
     "url": "https://gitlab.com/lv2/pugl/-/archive/66afe808e8c17f41cf6122158df96361cb42cccb/pugl-66afe808e8c17f41cf6122158df96361cb42cccb.tar.gz",
     "hash": "sha256-1gsQl0hQCrzGLNxXarfxuFd5tWu1yHIEzUHRznwWDY0="
   },
-  "cairo_zig-1.18.4-GbxI8QpbAQD1mm-pi1QJuwYmxvhdVf0K1XhMEFlgsVhb": {
+  "cairo_zig-1.18.4-GbxI8cxhAQCZIqJuH0r3-f6TMjKLYO9m9KY_nzx0a-Yf": {
     "name": "cairo",
-    "url": "https://github.com/bandithedoge/cairo.zig/archive/bfc51c8232486ed21e83e020711aa039c7b6bc04.tar.gz",
-    "hash": "sha256-S4vW2oaNO1oASJiQHK8XoEL1qFfwwMZ82ivUN3W2Uqk="
+    "url": "https://github.com/bandithedoge/cairo.zig/archive/98db1d4a9cf2eaf659e58590c5a0bcd1d2663b1a.tar.gz",
+    "hash": "sha256-3cSNUS6+Z5HdajeZ3+/m6vdhKdIPaXD9apvph9U1Bq0="
   },
   "N-V-__8AAFW9nwOvQAmLG664NOHF67FmS00qy_Lhg72aEv9Q": {
     "name": "cairo",
     "url": "https://www.cairographics.org/releases/cairo-1.18.4.tar.xz",
     "hash": "sha256-RF7YIIpuSCPeEianTKMZ02AOg/Y2n5mxQmUAZZnDLMs="
   },
-  "pixman-0.0.0-9hepuMcHAADs81NS83ux0N4W1T2b1r3XxV16jCrghjPK": {
+  "pixman-0.0.0-9hepuP4HAABpFJXcFsgmuPOzQrHzX7fs88Fn4D8TuBUV": {
     "name": "pixman",
-    "url": "https://github.com/bandithedoge/pixman/archive/80475c32cc85a4f3cae6dd548e2b4eff845436bd.tar.gz",
-    "hash": "sha256-iVLFwB5V0JMnK2Pzq+J7HMZ3dHd8L7w2PEnJyuFLWFo="
+    "url": "https://github.com/bandithedoge/pixman/archive/28698cec3be55d668df7895f447e78a1a899e55a.tar.gz",
+    "hash": "sha256-9wCnG9xUdV9HHr7RbF8IQ8FHzsrIXWMoxvxwiNI5Lc0="
   },
   "N-V-__8AACdzQgB3Xt60BggeOhQybqmqPiqfBgmabFAL8LPJ": {
     "name": "pixman",
     "url": "https://cairographics.org/releases/pixman-0.42.2.tar.gz",
     "hash": "sha256-6hSA762i/ZSLx1Nm98NJ4cltMpfQmj/mJibjjiNKYl4="
   },
-  "freetype-0.0.0-2bU4KiBJcwBfuCoK33E7c6OJynXCvaTBtRyI68c42A1O": {
+  "freetype-2.13.3-C3-WdeyJAAD9z8BeYYQ8N3gNlPI9NvHRxg5039S5vhz7": {
     "name": "freetype",
-    "url": "https://github.com/bandithedoge/freetype/archive/3d0618154d7b0797b22688e9bda3753270e76462.tar.gz",
-    "hash": "sha256-SV/zjSM7WZalCDEDMM7Smr+4MbQIKXt8M+AHArJGmuo="
+    "url": "https://github.com/allyourcodebase/freetype/archive/9d847affbd224cf6a7303ad6d98715e3675ef78c.tar.gz",
+    "hash": "sha256-il73soIP3g7kb1qq5HX2Y5iNJVdOBHq3D3Y4gUJqhgc="
   },
-  "N-V-__8AAKgyIgAxeJp8Y2TC-ZFkwRg2Ybtf6RStczbMIkA5": {
-    "name": "brotli",
-    "url": "https://pkg.machengine.org/brotli/10961426f03016e273f4f4653eae907e9e2339b6.tar.gz",
-    "hash": "sha256-fKHDFopY8WCcOO3/5eR/qTFoUX8nt8ARjKcGtVhpyXo="
+  "N-V-__8AAKfbpwAXnUJ6TJEaqZGWgp6F_8OhiLErejRxQ7Y5": {
+    "name": "freetype",
+    "url": "https://github.com/freetype/freetype/archive/refs/tags/VER-2-13-3.tar.gz",
+    "hash": "sha256-vFyJjkdW03Pg2ZG6sFMDbF6yqnwNXGfoZi3cbaQMQQM="
   },
-  "zlib-1.3.1-ZZQ7lVgMAACwO4nUUd8GLhsuQ5JQq_VAhlEiENJTUv6h": {
+  "libpng-1.6.50-oiaFGt4qAAB_vzrtvz9hA7_UiBW4arSaMVGc7ekKMCZ2": {
+    "name": "libpng",
+    "url": "git+https://github.com/allyourcodebase/libpng#d512607515687aa60b975d6a191aef9a692dac87",
+    "hash": "sha256-uAuTz+uVGGmu/0HOHuuHj+lo6Mn/rT0KahJdZVhB+eg=",
+    "rev": "d512607515687aa60b975d6a191aef9a692dac87"
+  },
+  "N-V-__8AAGrVXwC00HYe0ep6gbt70MXihr_woI0886_w8tD8": {
+    "name": "libpng",
+    "url": "https://github.com/glennrp/libpng/archive/refs/tags/v1.6.50.tar.gz",
+    "hash": "sha256-cRWOU8/fKHe8mbyrM2QdeN8/SObg2q0DCv6cuMAxqkY="
+  },
+  "zlib-1.3.1-ZZQ7lbYMAAAuaZnFj2675ah508w1Oc-EuY1V1cWJka2C": {
     "name": "zlib",
-    "url": "https://github.com/allyourcodebase/zlib/archive/6c72830882690c1eb2567a537525c3f432c1da50.tar.gz",
-    "hash": "sha256-4WM8WhXETXvK/c+rV6kCL7vFbYuT62Zde5vgsqucJsE="
+    "url": "git+https://github.com/allyourcodebase/zlib#8a8161babd4b79ea47d5a5976337a96ac4a5666b",
+    "hash": "sha256-is6CcnQ7691a/yZFdTtIW5GpNh/qdA+onx+Er2gizhc=",
+    "rev": "8a8161babd4b79ea47d5a5976337a96ac4a5666b"
   },
   "N-V-__8AAB0eQwD-0MdOEBmz7intriBReIsIDNlukNVoNu6o": {
     "name": "zlib",
     "url": "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
     "hash": "sha256-F+iIY/NgBnKrSRgvIXKBtvxNPHYr3jYZNeQ2qVIU0Fw="
   },
-  "libpng-1.6.43-oiaFGlwqAAC_FTbIqUxyNhS5-yP_0h-YabxhZZ8w95No": {
-    "name": "libpng",
-    "url": "https://github.com/bandithedoge/libpng/archive/33f96680cfcbbf563f95efc6b6577374c15708eb.tar.gz",
-    "hash": "sha256-LN1pbQ0YD64wocU2+X4qSptoq2jK8NL2WfJw2qmdsaA="
-  },
-  "N-V-__8AAJrvXQCqAT8Mg9o_tk6m0yf5Fz-gCNEOKLyTSerD": {
-    "name": "libpng",
-    "url": "https://github.com/glennrp/libpng/archive/refs/tags/v1.6.43.tar.gz",
-    "hash": "sha256-/syVtGzwXo4/yKQUdQ4LparQDYnp/fF16U/wQcrxoDo="
-  },
-  "zlib-1.3.1-AAAAACEMAAA0qyoSrfgBb_p25ItL4yRf_TBRk-26TYMF": {
+  "zlib-1.3.1-ZZQ7lbYMAAB1hTSOKSXAKAgHsfDcyWNH_37ojw5WSpgR": {
     "name": "zlib",
-    "url": "https://github.com/allyourcodebase/zlib/archive/refs/tags/1.3.1.tar.gz",
-    "hash": "sha256-a1h4xVMvGnlglQ6MXIXGadr99EDE5NWsDY2Cso9Yfqo="
+    "url": "https://github.com/allyourcodebase/zlib/archive/61e7df7e996ec5a5f13a653db3c419adb340d6ef.tar.gz",
+    "hash": "sha256-H+M0njQqi7O7z3yCod1Kva2O8np+Yb4/+8C+WspDplc="
   },
-  "1220fed0c74e1019b3ee29edae2051788b080cd96e90d56836eea857b0b966742efb": {
-    "name": "zlib",
-    "url": "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
-    "hash": "sha256-F+iIY/NgBnKrSRgvIXKBtvxNPHYr3jYZNeQ2qVIU0Fw="
-  },
-  "12201149afb3326c56c05bb0a577f54f76ac20deece63aa2f5cd6ff31a4fa4fcb3b7": {
+  "N-V-__8AAIrfdwARSa-zMmxWwFuwpXf1T3asIN7s5jqi9c1v": {
     "name": "fontconfig",
     "url": "https://deps.files.ghostty.org/fontconfig-2.14.2.tar.gz",
     "hash": "sha256-O6LdkhWHGKzsXKrxpxYEO1qgVcJ7CB2RSvPMtA3OilU="
   },
-  "libexpat-2.6.4-AAAAAAw1AAAcTQL6LeoXAmCOqTtECXixtfWNy99iTNYn": {
+  "libexpat-2.7.1-y_akI-g7AABOKMRAFAL1BU60IqpRNHZXrUB_2Hu16Vsl": {
     "name": "expat",
-    "url": "https://github.com/allyourcodebase/libexpat/archive/57aa500f8c9f6701044a5fd0ac5d730d36f800cd.tar.gz",
-    "hash": "sha256-k1QHxUhNWSTAjdtpps9UW8QaZs4Uh5fbSQ0zAcXf7Dw="
+    "url": "https://github.com/allyourcodebase/libexpat/archive/2f2954d71f91142359fbbb158145bda7d36783d7.tar.gz",
+    "hash": "sha256-gOIMtaBo3P4fnhlgSdKWeBF45WvaNsxoNI1LilWLzYY="
   },
-  "122023634c5939c209cbc4e27867707244abfd08d1234aeeda686fbe1a65435dd531": {
+  "N-V-__8AAMX2GwiF4I3vxSUHX70z0UP4G2EwLiT2Q9eNGkwN": {
     "name": "libexpat",
-    "url": "git+https://github.com/libexpat/libexpat.git?ref=R_2_6_4#2691aff4304a6d7e053199c205620136481b9dd1",
-    "hash": "sha256-ek8/3c8bKG+z7fIM+QCNsH7eoVGAt7z3bXBHZ3QjlS8=",
-    "rev": "2691aff4304a6d7e053199c205620136481b9dd1"
+    "url": "git+https://github.com/libexpat/libexpat?ref=R_2_7_1#f9a3eeb3e09fbea04b1c451ffc422ab2f1e45744",
+    "hash": "sha256-fAJgHW3KIe5qtQ0ymRiyB8WBt05bMz8b3+JBibCpzQw=",
+    "rev": "f9a3eeb3e09fbea04b1c451ffc422ab2f1e45744"
   }
 }
