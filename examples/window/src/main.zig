@@ -99,7 +99,8 @@ pub fn main() !void {
         try c.view.show(.raise);
     }
 
-    const stdout = std.io.getStdOut().writer();
+    var stdout = std.fs.File.stdout().writer(&.{});
+    const writer = &stdout.interface;
 
     var last_report_time = world.getTime();
     var frames_drawn: u64 = 0;
@@ -113,7 +114,7 @@ pub fn main() !void {
             if (this_time > last_report_time + 5) {
                 const elapsed = this_time - last_report_time;
                 const fps = @as(f32, @floatFromInt(frames_drawn)) / elapsed;
-                try stdout.print("FPS: {d:.2} ({} frames / {d:.2} seconds)\n", .{ fps, frames_drawn, elapsed });
+                try writer.print("FPS: {d:.2} ({} frames / {d:.2} seconds)\n", .{ fps, frames_drawn, elapsed });
                 last_report_time = this_time;
                 frames_drawn = 0;
             }

@@ -3,7 +3,8 @@ const std = @import("std");
 const CairoBackend = @import("backend_cairo");
 const pugl = @import("pugl");
 
-const c = @import("c.zig");
+const c = @cImport(@cInclude("cairo.h"));
+
 const Options = @import("Options.zig");
 
 const App = struct {

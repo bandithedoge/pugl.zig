@@ -1,6 +1,7 @@
 .{
     .name = .pugl,
     .version = "0.1.0",
+    .minimum_zig_version = "0.15.1",
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
@@ -8,8 +9,8 @@
             .hash = "N-V-__8AALnoDwD8UNMf-78hqKYkPF8CW2YGKgPFTo-VHunz",
         },
         .cairo = .{
-            .url = "https://github.com/bandithedoge/cairo.zig/archive/bfc51c8232486ed21e83e020711aa039c7b6bc04.tar.gz",
-            .hash = "cairo_zig-1.18.4-GbxI8QpbAQD1mm-pi1QJuwYmxvhdVf0K1XhMEFlgsVhb",
+            .url = "https://github.com/bandithedoge/cairo.zig/archive/98db1d4a9cf2eaf659e58590c5a0bcd1d2663b1a.tar.gz",
+            .hash = "cairo_zig-1.18.4-GbxI8cxhAQCZIqJuH0r3-f6TMjKLYO9m9KY_nzx0a-Yf",
             .lazy = true,
         },
     },

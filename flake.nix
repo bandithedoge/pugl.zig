@@ -19,7 +19,7 @@
         ...
       }: let
         zigEnv = zig2nix.zig-env.${system} {
-          zig = zig2nix.packages.${system}.zig-master;
+          zig = zig2nix.packages.${system}.zig-0_15_1;
         };
       in {
         packages = rec {

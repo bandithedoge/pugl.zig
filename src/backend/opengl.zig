@@ -22,7 +22,7 @@ pub fn new(view: *const pugl.View) Gl {
 }
 
 /// Return the address of an OpenGL extension function.
-pub fn getProcAddress(name: [:0]const u8) ?*const fn () callconv(.C) void {
+pub fn getProcAddress(name: [:0]const u8) ?*const fn () callconv(.c) void {
     return c.puglGetProcAddress(name);
 }
 

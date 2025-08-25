@@ -6,9 +6,11 @@ pub fn build(b: *std.Build) !void {
 
     const exe = b.addExecutable(.{
         .name = "pugl_window_demo",
-        .target = target,
-        .optimize = optimize,
-        .root_source_file = b.path("src/main.zig"),
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = b.path("src/main.zig"),
+        }),
     });
 
     const pugl = b.dependency("pugl", .{
@@ -27,6 +29,9 @@ pub fn build(b: *std.Build) !void {
     });
 
     exe.root_module.addImport("gl", gl);
+
+    // this artifact includes cairo headers
+    exe.linkLibrary(pugl.artifact("pugl_headers"));
 
     b.installArtifact(exe);
 }

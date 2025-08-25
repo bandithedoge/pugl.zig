@@ -77,7 +77,7 @@ pub fn setEventFunc(
     func: fn (*const View, event.Event) pugl.Error!void,
 ) pugl.Error!void {
     const c_func = struct {
-        fn inner(c_view: ?*c.PuglView, c_event: [*c]const c.PuglEvent) callconv(.C) c.PuglStatus {
+        fn inner(c_view: ?*c.PuglView, c_event: [*c]const c.PuglEvent) callconv(.c) c.PuglStatus {
             func(&View{ .view = c_view.? }, event.Event.from(c_event)) catch |e| {
                 return statusFromErr(e);
             };

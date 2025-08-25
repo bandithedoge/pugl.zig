@@ -34,10 +34,10 @@ pub fn build(b: *std.Build) !void {
     options_step.addOption(@TypeOf(platform), "platform", platform);
     const c_src_ext = if (platform == .mac) "m" else "c";
 
-    var c_flags = std.ArrayList([]const u8).init(b.allocator);
-    try c_flags.appendSlice(&.{ "-DPUGL_INTERNAL", "-DPUGL_STATIC" });
+    var c_flags = std.ArrayList([]const u8).empty;
+    try c_flags.appendSlice(b.allocator, &.{ "-DPUGL_INTERNAL", "-DPUGL_STATIC" });
 
-    var tests = std.ArrayList([]const u8).init(b.allocator);
+    var tests = std.ArrayList([]const u8).empty;
 
     const pugl_dep = b.dependency("pugl", .{});
 
@@ -49,7 +49,7 @@ pub fn build(b: *std.Build) !void {
     pugl_c.addIncludePath(pugl_dep.path("include"));
     const pugl_c_module = pugl_c.addModule("c");
 
-    const pugl_module = b.addModule("pugl", .{
+    const pugl = b.addModule("pugl", .{
         .target = target,
         .optimize = optimize,
         .root_source_file = b.path("src/pugl/pugl.zig"),
@@ -60,46 +60,48 @@ pub fn build(b: *std.Build) !void {
         },
     });
 
-    const pugl = b.addStaticLibrary(.{
-        .name = "pugl",
-        .root_source_file = pugl_module.root_source_file,
-        .target = target,
-        .optimize = optimize,
+    const header_lib = b.addLibrary(.{
+        .name = "pugl_headers",
+        .root_module = pugl,
     });
+    b.installArtifact(header_lib);
 
-    pugl.linkSystemLibrary("m");
+    // pugl.linkLibrary(header_lib);
+
+    pugl.linkSystemLibrary("m", .{});
 
     pugl.addIncludePath(pugl_dep.path("include"));
-    pugl.installHeadersDirectory(pugl_dep.path("include"), "", .{});
-    pugl.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
+    pugl.addIncludePath(pugl_dep.path("subprojects/puglutil/include"));
+    header_lib.installHeadersDirectory(pugl_dep.path("include"), "", .{});
+    header_lib.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
 
     switch (platform) {
         .x11 => {
-            pugl.linkSystemLibrary("x11");
-            pugl.linkSystemLibrary("xrender");
+            pugl.linkSystemLibrary("x11", .{});
+            pugl.linkSystemLibrary("xrender", .{});
 
-            try c_flags.append("-D_POSIX_C_SOURCE=200809L");
+            try c_flags.append(b.allocator, "-D_POSIX_C_SOURCE=200809L");
 
             if (options.use_xcursor) {
-                pugl.linkSystemLibrary("xcursor");
-                try c_flags.append("-DUSE_XCURSOR=1");
+                pugl.linkSystemLibrary("xcursor", .{});
+                try c_flags.append(b.allocator, "-DUSE_XCURSOR=1");
             }
 
             if (options.use_xrandr) {
-                pugl.linkSystemLibrary("xrandr");
-                try c_flags.append("-DUSE_XRANDR=1");
+                pugl.linkSystemLibrary("xrandr", .{});
+                try c_flags.append(b.allocator, "-DUSE_XRANDR=1");
             }
 
             if (options.use_xsync) {
-                pugl.linkSystemLibrary("xext");
-                try c_flags.append("-DUSE_XSYNC=1");
+                pugl.linkSystemLibrary("xext", .{});
+                try c_flags.append(b.allocator, "-DUSE_XSYNC=1");
             }
         },
         .mac => {
-            pugl.linkFramework("Cocoa");
+            pugl.linkFramework("Cocoa", .{});
         },
         .win => {
-            try c_flags.appendSlice(&.{
+            try c_flags.appendSlice(b.allocator, &.{
                 "-DWINVER=0x0500", // Windows 2000
                 "-D_WIN32_WINNT=0x0500", // Windows 2000
                 // Disable as many things from windows.h as possible
@@ -129,21 +131,21 @@ pub fn build(b: *std.Build) !void {
                 "-DNOMCX", // Modem Configuration Extensions
             });
             if (options.win_wchar)
-                try c_flags.appendSlice(&.{ "-DUNICODE", "-D_UNICODE" });
-            pugl.linkSystemLibrary("user32");
-            pugl.linkSystemLibrary("shlwapi");
-            pugl.linkSystemLibrary("dwmapi");
-            pugl.linkSystemLibrary("gdi32");
+                try c_flags.appendSlice(b.allocator, &.{ "-DUNICODE", "-D_UNICODE" });
+            pugl.linkSystemLibrary("user32", .{});
+            pugl.linkSystemLibrary("shlwapi", .{});
+            pugl.linkSystemLibrary("dwmapi", .{});
+            pugl.linkSystemLibrary("gdi32", .{});
         },
     }
 
     const backend_imports: []const std.Build.Module.Import = &.{
-        .{ .name = "pugl", .module = pugl_module },
+        .{ .name = "pugl", .module = pugl },
         .{ .name = "c", .module = pugl_c_module },
     };
 
     if (options.backend_opengl) {
-        pugl.linkSystemLibrary("gl");
+        pugl.linkSystemLibrary("gl", .{});
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
 
@@ -151,9 +153,9 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/opengl.zig"),
             .imports = backend_imports,
         });
-        opengl_module.linkLibrary(pugl);
+        opengl_module.linkLibrary(header_lib);
 
-        try tests.appendSlice(&.{
+        try tests.appendSlice(b.allocator, &.{
             "gl",
             "gl_free_unrealized",
             "gl_hints",
@@ -161,7 +163,7 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_vulkan) {
-        pugl.linkSystemLibrary("vulkan");
+        pugl.linkSystemLibrary("vulkan", .{});
 
         pugl.addCSourceFile(.{
             .file = pugl_dep.path(b.fmt("src/{s}_vulkan.{s}", .{ @tagName(platform), c_src_ext })),
@@ -169,17 +171,17 @@ pub fn build(b: *std.Build) !void {
         });
 
         if (platform == .mac) {
-            pugl.linkFramework("Metal");
-            pugl.linkFramework("QuartzCore");
+            pugl.linkFramework("Metal", .{});
+            pugl.linkFramework("QuartzCore", .{});
         }
 
-        const vulkan_module = b.addModule("backend_vulkan", .{
+        _ = b.addModule("backend_vulkan", .{
             .root_source_file = b.path("src/backend/vulkan.zig"),
             .imports = backend_imports,
         });
-        vulkan_module.linkLibrary(pugl);
+        // vulkan_module.linkLibrary(pugl);
 
-        try tests.append("vulkan");
+        try tests.append(b.allocator, "vulkan");
     }
 
     if (options.backend_cairo) {
@@ -195,9 +197,10 @@ pub fn build(b: *std.Build) !void {
                 const artifact = cairo.artifact("cairo");
 
                 pugl.linkLibrary(artifact);
-                pugl.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
+                pugl.addIncludePath(artifact.getEmittedIncludeTree().path(cairo.builder, ""));
+                header_lib.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
             }
-        } else pugl.linkSystemLibrary("cairo");
+        } else pugl.linkSystemLibrary("cairo", .{});
 
         pugl.addCSourceFile(.{
             .file = pugl_dep.path(b.fmt("src/{s}_cairo.{s}", .{ @tagName(platform), c_src_ext })),
@@ -208,9 +211,9 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/cairo.zig"),
             .imports = backend_imports,
         });
-        cairo_module.linkLibrary(pugl);
+        cairo_module.linkLibrary(header_lib);
 
-        try tests.append("cairo");
+        try tests.append(b.allocator, "cairo");
     }
 
     if (options.backend_stub) {
@@ -219,13 +222,13 @@ pub fn build(b: *std.Build) !void {
             .flags = c_flags.items,
         });
 
-        const stub_module = b.addModule("backend_stub", .{
+        _ = b.addModule("backend_stub", .{
             .root_source_file = b.path("src/backend/stub.zig"),
             .imports = backend_imports,
         });
-        stub_module.linkLibrary(pugl);
+        // stub_module.linkLibrary(pugl);
 
-        try tests.appendSlice(&.{
+        try tests.appendSlice(b.allocator, &.{
             "cursor",
             "realize",
             "redisplay",
@@ -253,16 +256,14 @@ pub fn build(b: *std.Build) !void {
         .flags = c_flags.items,
     });
 
-    b.installArtifact(pugl);
+    // b.installArtifact(pugl);
 
     const run_tests_step = b.step("test", "Run tests");
 
     const unit_tests = b.addTest(.{
-        .target = target,
-        .optimize = optimize,
-        .root_module = pugl_module,
+        .root_module = pugl,
     });
-    unit_tests.linkLibrary(pugl);
+    // unit_tests.linkLibrary(pugl);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
     run_tests_step.dependOn(&run_unit_tests.step);
@@ -270,11 +271,13 @@ pub fn build(b: *std.Build) !void {
     for (tests.items) |test_name| {
         const test_exe = b.addExecutable(.{
             .name = b.fmt("test_{s}", .{test_name}),
-            .target = target,
-            .optimize = optimize,
+            .root_module = b.createModule(.{
+                .target = target,
+                .optimize = optimize,
+            }),
         });
         test_exe.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("test/test_{s}.c", .{test_name})) });
-        test_exe.linkLibrary(pugl);
+        test_exe.linkLibrary(header_lib);
 
         const run_test = b.addRunArtifact(test_exe);
         run_tests_step.dependOn(&run_test.step);
@@ -282,7 +285,7 @@ pub fn build(b: *std.Build) !void {
 
     const docs_step = b.step("docs", "Build API docs");
     const install_docs = b.addInstallDirectory(.{
-        .source_dir = pugl.getEmittedDocs(),
+        .source_dir = header_lib.getEmittedDocs(),
         .install_dir = .prefix,
         .install_subdir = "docs",
     });
