@@ -12,7 +12,7 @@ const App = struct {
     options: Options,
     should_close: bool = false,
 
-    pub fn new() !App {
+    pub fn init() !App {
         return .{ .options = try Options.parse() };
     }
 
@@ -26,22 +26,22 @@ fn getProcAddress(name: [*:0]const u8) ?*const anyopaque {
 }
 
 pub fn main() !void {
-    var app = try App.new();
+    var app = try App.init();
 
-    var world = try pugl.World.new(.program, .{});
-    defer world.free();
+    var world = try pugl.World.init(.program, .{});
+    defer world.deinit();
 
     try world.setHint(.class_name, "PuglCursorDemo");
 
-    const view: pugl.View = try .new(&world);
-    defer view.free();
+    const view: pugl.View = try .init(&world);
+    defer view.deinit();
 
     try view.setStringHint(.window_title, "Pugl Cursor Demo");
     try view.setSizeHint(.default, .{ .width = 512, .height = 256 });
     try view.setSizeHint(.minimum, .{ .width = 128, .height = 64 });
     try view.setSizeHint(.maximum, .{ .width = 512, .height = 256 });
 
-    const backend = OpenGlBackend.new(&view);
+    const backend = OpenGlBackend.init(&view);
     try view.setBackend(backend.backend);
 
     if (!procs.init(getProcAddress))

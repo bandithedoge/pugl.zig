@@ -24,7 +24,7 @@ const App = struct {
     distance: f64 = 10,
     mouse_entered: bool = false,
 
-    pub fn new() !App {
+    pub fn init() !App {
         return .{ .options = try Options.parse() };
     }
 
@@ -36,18 +36,18 @@ const App = struct {
 const border: pugl.View.Point = .{ .x = 64, .y = 64 };
 
 pub fn main() !void {
-    var app = try App.new();
+    var app = try App.init();
 
-    const world = try pugl.World.new(.program, .{});
-    defer world.free();
+    const world = try pugl.World.init(.program, .{});
+    defer world.deinit();
 
     try world.setHint(.class_name, "PuglEmbedDemo");
 
     if (!app.procs.init(getProcAddress))
         return pugl.Error.BackendFailed;
 
-    app.parent = try pugl.View.new(&world);
-    defer app.parent.free();
+    app.parent = try pugl.View.init(&world);
+    defer app.parent.deinit();
 
     try app.parent.setSizeHint(.default, .{ .width = 512, .height = 512 });
     try app.parent.setSizeHint(.minimum, .{ .width = 192, .height = 192 });
@@ -67,13 +67,13 @@ pub fn main() !void {
     try app.parent.setEventFunc(onParentEvent);
     try app.parent.setStringHint(.window_title, "Pugl Prüfung");
 
-    const parent_backend = OpenGlBackend.new(&app.parent);
+    const parent_backend = OpenGlBackend.init(&app.parent);
     try app.parent.setBackend(parent_backend.backend);
 
     try app.parent.realize();
 
-    app.child = try pugl.View.new(&world);
-    defer app.child.free();
+    app.child = try pugl.View.init(&world);
+    defer app.child.deinit();
 
     try app.child.setParent(app.parent.getNativeView());
 
@@ -93,7 +93,7 @@ pub fn main() !void {
     app.child.setHandle(&app);
     try app.child.setEventFunc(onChildEvent);
 
-    const child_backend = OpenGlBackend.new(&app.child);
+    const child_backend = OpenGlBackend.init(&app.child);
     try app.child.setBackend(child_backend.backend);
 
     try app.child.realize();

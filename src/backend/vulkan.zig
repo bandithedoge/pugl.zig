@@ -24,7 +24,7 @@ vulkan_loader: *c.PuglVulkanLoader,
 /// It can be set to an alternative name, or an absolute path,
 /// to support special packaging scenarios or unusual system configurations.
 /// This name is passed directly to the underlying platform library loading function (`dlopen` or `LoadLibrary`).
-pub fn new(view: *const pugl.View, library_name: ?[:0]const u8) error{Failure}!Vulkan {
+pub fn init(view: *const pugl.View, library_name: ?[:0]const u8) error{Failure}!Vulkan {
     return .{
         .parent_view = view,
         .backend = @ptrCast(c.puglVulkanBackend().?),
@@ -35,10 +35,10 @@ pub fn new(view: *const pugl.View, library_name: ?[:0]const u8) error{Failure}!V
     };
 }
 
-/// Free the Vulkan loader created with `.new()`.
+/// Free the Vulkan loader created with `init`.
 ///
 /// Note that this closes the Vulkan library, so no Vulkan objects or API may be used after this is called.
-pub fn free(self: *const Vulkan) void {
+pub fn deinit(self: *const Vulkan) void {
     return c.puglFreeVulkanLoader(self.vulkan_loader);
 }
 

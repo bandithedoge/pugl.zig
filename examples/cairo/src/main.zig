@@ -15,7 +15,7 @@ const App = struct {
     last_drawn_mouse: Point = .{ .x = 0.0, .y = 0.0 },
     current_mouse: Point = .{ .x = 0.0, .y = 0.0 },
 
-    pub fn new() !App {
+    pub fn init() !App {
         return .{ .options = try Options.parse() };
     }
 
@@ -25,15 +25,15 @@ const App = struct {
 };
 
 pub fn main() !void {
-    var app = try App.new();
+    var app = try App.init();
 
-    var world = try pugl.World.new(.program, .{});
-    defer world.free();
+    var world = try pugl.World.init(.program, .{});
+    defer world.deinit();
 
     try world.setHint(.window_title, "PuglCairoDemo");
 
-    const view = try pugl.View.new(&world);
-    defer view.free();
+    const view = try pugl.View.init(&world);
+    defer view.deinit();
 
     try view.setStringHint(.window_title, "Pugl Cairo Demo");
     try view.setSizeHint(.default, .{ .width = 512, .height = 512 });
@@ -42,7 +42,7 @@ pub fn main() !void {
     try view.setBoolHint(.resizable, app.options.resizable);
     view.setHandle(@ptrCast(&app));
 
-    const backend = CairoBackend.new();
+    const backend = CairoBackend.init();
     try view.setBackend(backend.backend);
 
     try view.setBoolHint(.ignore_key_repeat, app.options.ignore_key_repeat);

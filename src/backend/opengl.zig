@@ -14,7 +14,7 @@ const Gl = @This();
 parent_view: *const pugl.View,
 backend: *const pugl_c.PuglBackend,
 
-pub fn new(view: *const pugl.View) Gl {
+pub fn init(view: *const pugl.View) Gl {
     return .{
         .parent_view = view,
         .backend = @ptrCast(c.puglGlBackend().?),
@@ -36,7 +36,7 @@ pub fn enterContext(self: *const Gl) pugl.Error!void {
 
 /// Leave the OpenGL context.
 ///
-/// This must only be called after `.enterContext()`.
+/// This must only be called after `enterContext`.
 pub fn leaveContext(self: *const Gl) pugl.Error!void {
     return errFromStatus(c.puglLeaveContext(self.parent_view.view));
 }

@@ -15,12 +15,12 @@ const View = @This();
 ///
 /// A newly created view does not correspond to a real system view or window.
 /// It must first be configured, then the system view can be created with `realize`.
-pub fn new(world: *const pugl.World) error{OutOfMemory}!View {
+pub fn init(world: *const pugl.World) error{OutOfMemory}!View {
     return .{ .view = c.puglNewView(world.world) orelse return pugl.Error.OutOfMemory };
 }
 
-/// Free a view created with `new`
-pub fn free(self: *const View) void {
+/// Free a view created with `init`
+pub fn deinit(self: *const View) void {
     c.puglFreeView(self.view);
 }
 
@@ -56,7 +56,7 @@ pub fn getHandle(self: *const View) ?*anyopaque {
 /// - `backend.cairo`
 /// - `backend.stub`
 ///
-/// After initializing a backend with `new`, pass its `backend` field to this function.
+/// After initializing a backend with `init`, pass its `backend` field to this function.
 ///
 /// Note that backends are modular and not compiled into the main Pugl library to avoid unnecessary dependencies.
 /// To use a particular backend, applications must link against the appropriate backend library,

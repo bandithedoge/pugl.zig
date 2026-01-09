@@ -30,7 +30,7 @@ const App = struct {
     options: Options,
     should_close: bool = false,
 
-    pub fn new() !App {
+    pub fn init() !App {
         return .{ .options = try Options.parse() };
     }
 
@@ -44,19 +44,19 @@ fn getProcAddress(name: [*:0]const u8) ?*const anyopaque {
 }
 
 pub fn main() !void {
-    var app = try App.new();
+    var app = try App.init();
 
-    var world = try pugl.World.new(.program, .{});
-    defer world.free();
+    var world = try pugl.World.init(.program, .{});
+    defer world.deinit();
 
     try world.setHint(.class_name, "PuglWindowDemo");
     world.setHandle(&app);
 
     var cubes: [2]Cube = undefined;
-    defer for (&cubes) |*c| c.view.free();
+    defer for (&cubes) |*c| c.view.deinit();
 
     for (&cubes, 0..) |*c, i| {
-        c.* = Cube{ .view = try pugl.View.new(&world) };
+        c.* = Cube{ .view = try pugl.View.init(&world) };
 
         // make sure to keep this in sync with zigglgen options in build.zig
         try c.view.setIntHint(.context_version_major, 3);
@@ -73,7 +73,7 @@ pub fn main() !void {
         try c.view.setSizeHint(.minimum, .{ .width = 128, .height = 128 });
         try c.view.setSizeHint(.maximum, .{ .width = 2048, .height = 2048 });
 
-        const backend = OpenGlBackend.new(&c.view);
+        const backend = OpenGlBackend.init(&c.view);
         try c.view.setBackend(backend.backend);
 
         if (!procs.init(getProcAddress))

@@ -12,7 +12,7 @@ const Stub = @This();
 
 backend: *const pugl_c.PuglBackend,
 
-pub fn new() Stub {
+pub fn init() Stub {
     return .{
         .backend = @ptrCast(c.puglStubBackend().?),
     };
