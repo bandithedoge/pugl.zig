@@ -284,8 +284,14 @@ pub fn build(b: *std.Build) !void {
     }
 
     const docs_step = b.step("docs", "Build API docs");
+
+    const lib = b.addLibrary(.{
+        .name = "pugl",
+        .root_module = pugl,
+    });
+
     const install_docs = b.addInstallDirectory(.{
-        .source_dir = header_lib.getEmittedDocs(),
+        .source_dir = lib.getEmittedDocs(),
         .install_dir = .prefix,
         .install_subdir = "docs",
     });

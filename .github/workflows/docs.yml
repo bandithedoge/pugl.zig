@@ -13,6 +13,10 @@ jobs:
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
 
+      - name: Install dependencies
+        run: |
+          apt install libx11-dev libxrender-dev libxcursor-dev libxrandr-dev libxext-dev
+
       - name: Build docs
         run: zig build docs
 
