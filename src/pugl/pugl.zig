@@ -1,8 +1,6 @@
 const std = @import("std");
-const builtin = @import("builtin");
 
 const c = @import("c");
-const options = @import("pugl_options");
 
 pub const event = @import("event.zig");
 pub const Keycode = @import("keycode.zig").Keycode;

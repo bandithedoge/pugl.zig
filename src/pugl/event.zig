@@ -672,9 +672,9 @@ pub const Client = struct {
 
 /// Timer event.
 ///
-/// This event is sent at the regular interval specified in the call to `View.startTimer()` that activated it.
+/// This event is sent at the regular interval specified in the call to `View.startTimer` that activated it.
 ///
-/// The `id` is the application-specific ID given to `View.startTimer()` which distinguishes this timer from others.
+/// The `id` is the application-specific ID given to `View.startTimer` which distinguishes this timer from others.
 /// It should always be checked in the event handler, even in applications that register only one timer.
 pub const Timer = struct {
     flags: Flags,
@@ -700,8 +700,8 @@ pub const Timer = struct {
 /// Clipboard data offer event.
 ///
 /// This event is sent when a clipboard has data present, possibly with several datatypes.
-/// While handling this event, the types can be investigated with `View.getClipboardType()` to decide whether to accept
-/// the offer with `View.acceptOffer()`.
+/// While handling this event, the types can be investigated with `View.getClipboardType` to decide whether to accept
+/// the offer with `View.acceptOffer`.
 pub const DataOffer = struct {
     flags: Flags,
     /// Time in seconds
@@ -726,7 +726,7 @@ pub const DataOffer = struct {
 /// Clipboard data event.
 ///
 /// This event is sent after accepting a data offer when the data has been retrieved and converted.
-/// While handling this event, the data can be accessed with `View.getClipboard()`.
+/// While handling this event, the data can be accessed with `View.getClipboard`.
 pub const Data = struct {
     flags: Flags,
     /// Time in seconds

@@ -21,7 +21,7 @@ pub const Type = enum(c_uint) {
 pub const Flags = packed struct {
     /// Set up support for threads if necessary.
     ///
-    /// X11: Calls XInitThreads() which is required for some drivers.
+    /// X11: Calls `XInitThreads` which is required for some drivers.
     threads: bool = false,
     _: u31 = 0,
 
@@ -36,12 +36,12 @@ test Flags {
     try std.testing.expectEqual(@as(u32, c.PUGL_WORLD_THREADS), (Flags{ .threads = true }).cast());
 }
 
-/// Create a new world. Must later be freed with `World.free()`
+/// Create a new world. Must later be freed with `free`
 pub fn new(world_type: Type, flags: Flags) error{OutOfMemory}!World {
     return .{ .world = c.puglNewWorld(@intFromEnum(world_type), flags.cast()) orelse return error.OutOfMemory };
 }
 
-/// Free a world allocated with `World.new()`
+/// Free a world allocated with `new`
 pub fn free(self: *const World) void {
     c.puglFreeWorld(self.world);
 }

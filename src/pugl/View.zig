@@ -1,7 +1,6 @@
 const std = @import("std");
 const pugl = @import("pugl.zig");
 const c = @import("c");
-const options = @import("pugl_options");
 const event = @import("event.zig");
 
 const utils = @import("utils.zig");
@@ -15,12 +14,12 @@ const View = @This();
 /// Create a new view.
 ///
 /// A newly created view does not correspond to a real system view or window.
-/// It must first be configured, then the system view can be created with `View.realize()`.
+/// It must first be configured, then the system view can be created with `realize`.
 pub fn new(world: *const pugl.World) error{OutOfMemory}!View {
     return .{ .view = c.puglNewView(world.world) orelse return pugl.Error.OutOfMemory };
 }
 
-/// Free a view created with `View.new()`
+/// Free a view created with `new`
 pub fn free(self: *const View) void {
     c.puglFreeView(self.view);
 }
@@ -42,14 +41,14 @@ pub fn setHandle(self: *const View, handle: ?*anyopaque) void {
 
 /// Get the user data for a view
 ///
-/// Returns null if `View.setHandle` was not called or called with null.
+/// Returns null if `setHandle` was not called or called with null.
 pub fn getHandle(self: *const View) ?*anyopaque {
     return c.puglGetHandle(self.view);
 }
 
 /// Set the graphics backend to use for a view.
 ///
-/// This must be called once to set the graphics backend before calling `View.realize()`.
+/// This must be called once to set the graphics backend before calling `realize`.
 ///
 /// Pugl includes the following backends:
 /// - `backend.gl`
@@ -57,7 +56,7 @@ pub fn getHandle(self: *const View) ?*anyopaque {
 /// - `backend.cairo`
 /// - `backend.stub`
 ///
-/// After initializing a backend with `.new()`, pass its `backend` field to this function.
+/// After initializing a backend with `new`, pass its `backend` field to this function.
 ///
 /// Note that backends are modular and not compiled into the main Pugl library to avoid unnecessary dependencies.
 /// To use a particular backend, applications must link against the appropriate backend library,
@@ -120,7 +119,7 @@ pub const IntHint = enum(c_uint) {
 ///
 /// A `null` value means "don't care".
 ///
-/// This only has an effect when called before `View.realize()`.
+/// This only has an effect when called before `realize`.
 pub fn setIntHint(self: *const View, hint: IntHint, value: ?i32) pugl.Error!void {
     try errFromStatus(c.puglSetViewHint(self.view, @intFromEnum(hint), value orelse c.PUGL_DONT_CARE));
 }
@@ -154,7 +153,7 @@ pub const BoolHint = enum(c_uint) {
 ///
 /// A `null` value means "don't care".
 ///
-/// This only has an effect when called before `View.realize()`.
+/// This only has an effect when called before `realize`.
 pub fn setBoolHint(self: *const View, hint: BoolHint, value: ?bool) pugl.Error!void {
     try errFromStatus(c.puglSetViewHint(self.view, @intFromEnum(hint), if (value) |v| @intFromBool(v) else c.PUGL_DONT_CARE));
 }
@@ -181,7 +180,7 @@ pub const ContextApi = enum(c_int) {
 ///
 /// A `null` value means "don't care".
 ///
-/// This only has an effect when called before `View.realize()`.
+/// This only has an effect when called before `realize`.
 pub fn setContextApi(self: *const View, value: ?ContextApi) pugl.Error!void {
     try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_CONTEXT_API, if (value) |v| @intFromEnum(v) else c.PUGL_DONT_CARE));
 }
@@ -239,7 +238,7 @@ pub const Type = enum(c_int) {
 ///
 /// A `null` value means "don't care".
 ///
-/// This only has an effect when called before `View.realize()`.
+/// This only has an effect when called before `realize`.
 pub fn setType(self: *const View, value: ?Type) pugl.Error!void {
     try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_VIEW_TYPE, if (value) |v| @intFromEnum(v) else c.PUGL_DONT_CARE));
 }
@@ -319,7 +318,7 @@ pub const PositionHint = enum(c_uint) {
 /// Set a position hint for the view.
 ///
 /// This can be used to set the default or current position of a view.
-/// This should be called before `View.realize()` so the initial window for the view can be configured correctly.
+/// This should be called before `realize` so the initial window for the view can be configured correctly.
 /// It may also be used dynamically after the window is realized, for some hints.
 ///
 /// Always succeeds if the view is not yet realized.
@@ -382,7 +381,7 @@ pub const Area = struct { width: u32, height: u32 };
 ///
 /// This can be used to set the default, current, minimum, and maximum size of a view,
 /// as well as the supported range of aspect ratios.
-/// This should be called before `View.realize()` so the initial window for the view can be configured correctly.
+/// This should be called before `realize` so the initial window for the view can be configured correctly.
 /// It may also be used dynamically after the window is realized, for some hints.
 ///
 /// Always succeeds if the view is not yet realized.
@@ -410,7 +409,7 @@ pub const NativeView = usize;
 
 /// Set the parent for embedding a view in an existing window.
 ///
-/// This must be called before `View.realize()`, reparenting is not supported.
+/// This must be called before `realize`, reparenting is not supported.
 pub fn setParent(self: *const View, parent: NativeView) pugl.Error!void {
     try errFromStatus(c.puglSetParent(self.view, parent));
 }
@@ -424,7 +423,7 @@ pub fn getParent(self: *const View) ?NativeView {
 /// Set the transient parent of the window.
 ///
 /// Set this for transient children like dialogs, to have them properly associated with their parent window.
-/// This should be called before `View.realize()`.
+/// This should be called before `realize`.
 ///
 /// A view can either have a parent (for embedding) or a transient parent (for top-level windows like dialogs),
 /// but not both.
@@ -440,8 +439,7 @@ pub fn getTransientParent(self: *const View) ?c.PuglNativeView {
 
 /// Realize a view by creating a corresponding system view or window.
 ///
-/// After this call, the (initially invisible) underlying system view exists and can be accessed with
-/// `View.getNativeView()`.
+/// After this call, the (initially invisible) underlying system view exists and can be accessed with `getNativeView`.
 ///
 /// The view should be fully configured using the above functions before this is called.
 /// This function may only be called once per view.
@@ -451,13 +449,13 @@ pub fn realize(self: *const View) pugl.Error!void {
 
 /// Unrealize a view by destroying the corresponding system view or window.
 ///
-/// This is the inverse of `View.realize()`.
+/// This is the inverse of `realize`.
 /// After this call, the view no longer corresponds to a real system view, and can be realized again later.
 pub fn unrealize(self: *const View) pugl.Error!void {
     try errFromStatus(c.puglUnrealize(self.view));
 }
 
-/// A command to control the behaviour of `View.show()`.
+/// A command to control the behaviour of `show`.
 pub const ShowCommand = enum(c_uint) {
     /// Realize and show the window without intentionally raising it.
     ///
@@ -618,7 +616,7 @@ pub fn obscureRegion(self: *const View, position: Point, area: Area) pugl.Error!
 /// Grab the keyboard input focus.
 ///
 /// Note that this will fail if the view is not mapped and so should not, for example,
-/// be called immediately after `View.show()`.
+/// be called immediately after `show`.
 pub fn grabFocus(self: *const View) pugl.Error!void {
     try errFromStatus(c.puglGrabFocus(self.view));
 }
@@ -646,7 +644,7 @@ pub fn getNumClipboardTypes(self: *const View) u32 {
 ///
 /// This is usually a MIME type, but may also be another platform-specific type identifier.
 /// Applications must ignore any type they do not recognize.
-/// Returns null if `type_index` is out of bounds according to `View.getNumClipboardTypes()`.
+/// Returns null if `type_index` is out of bounds according to `getNumClipboardTypes`.
 pub fn getClipboardType(self: *const View, type_index: u32) [:0]const u8 {
     return std.mem.span(c.puglGetClipboardType(self.view, type_index));
 }
@@ -656,17 +654,17 @@ pub fn getClipboardType(self: *const View, type_index: u32) [:0]const u8 {
 /// To accept data, this must be called while handling an `event.DataOffer`.
 /// Doing so will request the data from the source as the specified type.
 /// When the data is available, an `event.Data` will be sent to the view which can then retrieve the data with
-/// `View.getClipboard()`.
+/// `getClipboard`.
 ///
 /// type_index is the index of the type that the view will accept.
-/// This is the `type_index` argument to the call of `View.getClipboardType()` that returned the accepted type.
+/// This is the `type_index` argument to the call of `getClipboardType` that returned the accepted type.
 pub fn acceptOffer(self: *const View, offer: *const event.DataOffer, type_index: u32) pugl.Error!void {
     try errFromStatus(c.puglAcceptOffer(self.view, offer.cast(), type_index));
 }
 
 /// Set the clipboard contents.
 ///
-/// This sets the system clipboard contents, which can be retrieved with `View.getClipboard()` or pasted into other
+/// This sets the system clipboard contents, which can be retrieved with `getClipboard` or pasted into other
 /// applications.
 ///
 // `mime_type` is the MIME type of the data, "text/plain" is assumed if null.
@@ -676,7 +674,7 @@ pub fn setClipboard(self: *const View, mime_type: ?[:0]const u8, data: []anyopaq
 
 /// Get the clipboard contents.
 ///
-/// This gets the system clipboard contents, which may have been set with `View.setClipboard()` or copied from another
+/// This gets the system clipboard contents, which may have been set with `setClipboard` or copied from another
 /// application.
 ///
 /// Returns the clipboard contents, or null.
@@ -730,7 +728,7 @@ pub fn setCursor(self: *const View, cursor: Cursor) pugl.Error!void {
 ///
 /// This starts a timer which will send an `event.Timer` to the view every `timeout` seconds.
 /// This can be used to perform some action in a view at a regular interval with relatively low frequency.
-/// Note that the frequency of timer events may be limited by how often `View.update()` is called.
+/// Note that the frequency of timer events may be limited by how often `update` is called.
 ///
 /// If the given timer already exists, it is replaced.
 ///
@@ -752,7 +750,7 @@ pub fn startTimer(self: *const View, id: usize, timeout: f64) pugl.Error!void {
 
 /// Stop an active timer.
 ///
-/// `id` is the ID previously passed to `View.startTimer()`.
+/// `id` is the ID previously passed to `startTimer`.
 ///
 /// Returns `Failure` if timers are not supported by this system, `Unknown` if stopping the timer failed.
 pub fn stopTimer(self: *const View, id: usize) pugl.Error!void {
@@ -766,7 +764,7 @@ pub fn stopTimer(self: *const View, id: usize) pugl.Error!void {
 ///
 /// Currently, only `event.Client` events are supported on all platforms.
 ///
-/// X11: An `event.Expose` event can be sent, which is similar to calling `View.obscureRegion()`,
+/// X11: An `event.Expose` event can be sent, which is similar to calling `obscureRegion`,
 /// but will always send a message to the X server, even when called in an event handler.
 ///
 /// Returns `Unsupported` if sending events of this type is not supported, `Unknown` if sending the event failed.
