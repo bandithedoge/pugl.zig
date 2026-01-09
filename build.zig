@@ -184,9 +184,9 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_cairo) {
-        if (b.systemIntegrationOption("cairo", .{
-            .default = false,
-        })) {
+        if (b.systemIntegrationOption("cairo", .{}))
+            pugl.linkSystemLibrary("cairo", .{})
+        else {
             if (b.lazyDependency("cairo", .{
                 .target = target,
                 .optimize = optimize,
@@ -201,7 +201,7 @@ pub fn build(b: *std.Build) !void {
                 pugl.addIncludePath(artifact.getEmittedIncludeTree().path(cairo.builder, ""));
                 header_lib.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
             }
-        } else pugl.linkSystemLibrary("cairo", .{});
+        }
 
         pugl.addCSourceFile(.{
             .file = pugl_dep.path(b.fmt("src/{s}_cairo.{s}", .{ @tagName(platform), c_src_ext })),
