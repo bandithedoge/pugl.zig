@@ -26,11 +26,11 @@ jobs:
 
       - name: Install backend dependencies
         run: |
-          sudo apt install libgl-dev libvulkan-dev libcairo2-dev
+          sudo apt install libgl-dev libvulkan-dev
 
       - name: Build examples
         run: |
           for example in $(find $(realpath ..) -path "*/pugl.zig/examples/*/build.zig"); do
             cd $(dirname $example)
-            zig build -fsys=cairo
+            zig build
           done
