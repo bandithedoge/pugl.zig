@@ -4,37 +4,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Disable AppArmor
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Setup Nix cache
-        uses: cachix/cachix-action@v16
-        with:
-          name: zigplug
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
 
       - name: Check formatting
-        run: nix develop -c zig fmt --check .
+        run: zig fmt --check .
 
-      - run: nix build .#docs
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "result/docs"
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Run unit tests
+        run: zig build test
