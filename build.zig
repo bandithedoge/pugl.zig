@@ -17,7 +17,6 @@ pub fn build(b: *std.Build) !void {
         .use_xrandr = b.option(bool, "xrandr", "Support accessing the refresh rate on X11") orelse true,
         .use_xsync = b.option(bool, "xsync", "Support timers on X11") orelse true,
         .win_wchar = b.option(bool, "win_wchar", "Use UTF-16 wchar_t and UNICODE with Windows API") orelse true,
-        .build_cairo = b.option(bool, "build_cairo", "Build and link pugl.zig's pinned version of Cairo") orelse true,
     };
 
     const options_step = b.addOptions();
@@ -185,7 +184,9 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_cairo) {
-        if (options.build_cairo) {
+        if (b.systemIntegrationOption("cairo", .{
+            .default = false,
+        })) {
             if (b.lazyDependency("cairo", .{
                 .target = target,
                 .optimize = optimize,

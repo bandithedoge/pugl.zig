@@ -31,5 +31,5 @@ jobs:
         run: |
           for example in $(find $(realpath ..) -path "*/pugl.zig/examples/*/build.zig"); do
             cd $(dirname $example)
-            zig build
+            zig build -fsys=cairo
           done

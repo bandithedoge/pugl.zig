@@ -14,8 +14,8 @@ Zig bindings for [Pugl](https://gitlab.com/lv2/pugl), a minimal portable API for
 - Vulkan backend:
   - vulkan-loader
 - Cairo backend:
-  - cairo (optional, `-Dbuild_cairo=false`)
-  - glib (optional, Linux-only, `-Dbuild_cairo=true`)
+  - with `-fsys=cairo`: cairo
+  - otherwise: glib (Linux-only)
 
 # Usage
 
