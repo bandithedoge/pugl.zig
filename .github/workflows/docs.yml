@@ -15,7 +15,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt install libx11-dev libxrender-dev libxcursor-dev libxrandr-dev libxext-dev
+          sudo apt install libx11-dev libxrender-dev libxcursor-dev libxrandr-dev libxext-dev
 
       - name: Build docs
         run: zig build docs
