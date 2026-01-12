@@ -672,8 +672,8 @@ pub fn acceptOffer(self: *const View, offer: *const event.DataOffer, type_index:
 /// applications.
 ///
 // `mime_type` is the MIME type of the data, "text/plain" is assumed if null.
-pub fn setClipboard(self: *const View, mime_type: ?[:0]const u8, data: []anyopaque) pugl.Error!void {
-    try errFromStatus(c.puglSetClipboard(self.view, mime_type orelse null, data.ptr, data.len));
+pub fn setClipboard(self: *const View, mime_type: ?[:0]const u8, data: *const anyopaque) pugl.Error!void {
+    try errFromStatus(c.puglSetClipboard(self.view, mime_type, data, data.len));
 }
 
 /// Get the clipboard contents.
