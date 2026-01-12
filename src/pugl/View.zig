@@ -120,7 +120,7 @@ pub const IntHint = enum(c_uint) {
 /// A `null` value means "don't care".
 ///
 /// This only has an effect when called before `realize`.
-pub fn setIntHint(self: *const View, hint: IntHint, value: ?i32) pugl.Error!void {
+pub fn setIntHint(self: *const View, hint: IntHint, value: ?u31) pugl.Error!void {
     try errFromStatus(c.puglSetViewHint(self.view, @intFromEnum(hint), value orelse c.PUGL_DONT_CARE));
 }
 
@@ -131,9 +131,9 @@ pub fn setIntHint(self: *const View, hint: IntHint, value: ?i32) pugl.Error!void
 /// If the view has been realized,
 /// this can be used to get the actual value of a hint which was initially set to `null`,
 /// or has been adjusted from the suggested value.
-pub fn getIntHint(self: *const View, hint: IntHint) ?IntHint {
+pub fn getIntHint(self: *const View, hint: IntHint) ?u32 {
     const res = c.puglGetViewHint(self.view, @intFromEnum(hint));
-    return if (res == c.PUGL_DONT_CARE) null else @enumFromInt(res);
+    return if (res == c.PUGL_DONT_CARE) null else @abs(res);
 }
 
 pub const BoolHint = enum(c_uint) {
@@ -165,9 +165,13 @@ pub fn setBoolHint(self: *const View, hint: BoolHint, value: ?bool) pugl.Error!v
 /// If the view has been realized,
 /// this can be used to get the actual value of a hint which was initially set to `null`,
 /// or has been adjusted from the suggested value.
-pub fn getBoolHint(self: *const View, hint: IntHint) ?IntHint {
+pub fn getBoolHint(self: *const View, hint: BoolHint) ?bool {
     const res = c.puglGetViewHint(self.view, @intFromEnum(hint));
-    return if (res == c.PUGL_DONT_CARE) null else @enumFromInt(res);
+    return switch (res) {
+        c.PUGL_DONT_CARE => null,
+        0 => false,
+        else => true,
+    };
 }
 
 /// OpenGL render API
