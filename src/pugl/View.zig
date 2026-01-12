@@ -682,7 +682,7 @@ pub fn setClipboard(self: *const View, mime_type: ?[:0]const u8, data: []anyopaq
 /// application.
 ///
 /// Returns the clipboard contents, or null.
-pub fn getClipboard(self: *const View, type_index: u32, len: usize) ?*const anyopaque {
+pub fn getClipboard(self: *const View, type_index: u32, len: *usize) ?*const anyopaque {
     return c.puglGetClipboard(self.view, type_index, len);
 }
 
