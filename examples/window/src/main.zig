@@ -73,7 +73,7 @@ pub fn main() !void {
         try c.view.setSizeHint(.minimum, .{ .width = 128, .height = 128 });
         try c.view.setSizeHint(.maximum, .{ .width = 2048, .height = 2048 });
 
-        const backend = OpenGlBackend.init(&c.view);
+        const backend = OpenGlBackend.init(c.view);
         try c.view.setBackend(backend.backend);
 
         if (!procs.init(getProcAddress))

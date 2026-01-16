@@ -11,12 +11,12 @@ const c = @cImport({
 
 const Gl = @This();
 
-parent_view: *const pugl.View,
+parent_view: *pugl_c.PuglView,
 backend: *const pugl_c.PuglBackend,
 
-pub fn init(view: *const pugl.View) Gl {
+pub fn init(view: pugl.View) Gl {
     return .{
-        .parent_view = view,
+        .parent_view = view.view,
         .backend = @ptrCast(c.puglGlBackend().?),
     };
 }
@@ -31,12 +31,12 @@ pub fn getProcAddress(name: [:0]const u8) ?*const fn () callconv(.c) void {
 /// This can be used to enter the graphics context in unusual situations, for doing things like loading textures.
 /// Note that this must not be used for drawing, which may only be done while processing an expose event.
 pub fn enterContext(self: *const Gl) pugl.Error!void {
-    return errFromStatus(c.puglEnterContext(@ptrCast(self.parent_view.view)));
+    return errFromStatus(c.puglEnterContext(@ptrCast(self.parent_view)));
 }
 
 /// Leave the OpenGL context.
 ///
 /// This must only be called after `enterContext`.
 pub fn leaveContext(self: *const Gl) pugl.Error!void {
-    return errFromStatus(c.puglLeaveContext(@ptrCast(self.parent_view.view)));
+    return errFromStatus(c.puglLeaveContext(@ptrCast(self.parent_view)));
 }

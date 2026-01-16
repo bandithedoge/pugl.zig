@@ -67,7 +67,7 @@ pub fn main() !void {
     try app.parent.setEventFunc(onParentEvent);
     try app.parent.setStringHint(.window_title, "Pugl Prüfung");
 
-    const parent_backend = OpenGlBackend.init(&app.parent);
+    const parent_backend = OpenGlBackend.init(app.parent);
     try app.parent.setBackend(parent_backend.backend);
 
     try app.parent.realize();
@@ -93,7 +93,7 @@ pub fn main() !void {
     app.child.setHandle(&app);
     try app.child.setEventFunc(onChildEvent);
 
-    const child_backend = OpenGlBackend.init(&app.child);
+    const child_backend = OpenGlBackend.init(app.child);
     try app.child.setBackend(child_backend.backend);
 
     try app.child.realize();
