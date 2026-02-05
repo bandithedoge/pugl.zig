@@ -682,8 +682,19 @@ pub fn setClipboard(self: *const View, comptime T: type, mime_type: ?[:0]const u
 /// application.
 ///
 /// Returns the clipboard contents, or null.
-pub fn getClipboard(self: *const View, type_index: u32, len: *usize) ?*const anyopaque {
-    return c.puglGetClipboard(self.view, type_index, len);
+pub fn getClipboard(
+    self: *const View,
+    comptime T: type,
+    /// Index of the data type to get the item as
+    type_index: u32,
+) ?[]const T {
+    var len: usize = 0;
+    const ptr = c.puglGetClipboard(self.view, type_index, &len);
+    if (ptr) |data| {
+        const result: [*]const T = @ptrCast(data);
+        return result[0..len];
+    }
+    return null;
 }
 
 /// A mouse cursor type.
