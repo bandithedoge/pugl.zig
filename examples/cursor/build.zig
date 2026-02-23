@@ -30,8 +30,5 @@ pub fn build(b: *std.Build) !void {
 
     exe.root_module.addImport("gl", gl);
 
-    // this artifact includes cairo headers
-    exe.linkLibrary(pugl.artifact("pugl_headers"));
-
     b.installArtifact(exe);
 }

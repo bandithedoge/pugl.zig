@@ -25,7 +25,7 @@ pub fn build(b: *std.Build) !void {
     exe.root_module.addImport("backend_cairo", pugl.module("backend_cairo"));
 
     // this artifact includes cairo headers
-    exe.linkLibrary(pugl.artifact("pugl_headers"));
+    exe.linkLibrary(pugl.artifact("pugl"));
 
     b.installArtifact(exe);
 }

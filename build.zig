@@ -59,20 +59,18 @@ pub fn build(b: *std.Build) !void {
         },
     });
 
-    const header_lib = b.addLibrary(.{
-        .name = "pugl_headers",
+    const lib = b.addLibrary(.{
+        .name = "pugl",
         .root_module = pugl,
     });
-    b.installArtifact(header_lib);
-
-    // pugl.linkLibrary(header_lib);
+    b.installArtifact(lib);
 
     pugl.linkSystemLibrary("m", .{});
 
     pugl.addIncludePath(pugl_dep.path("include"));
     pugl.addIncludePath(pugl_dep.path("subprojects/puglutil/include"));
-    header_lib.installHeadersDirectory(pugl_dep.path("include"), "", .{});
-    header_lib.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
+    lib.installHeadersDirectory(pugl_dep.path("include"), "", .{});
+    lib.installHeadersDirectory(pugl_dep.path("subprojects/puglutil/include"), "", .{});
 
     switch (platform) {
         .x11 => {
@@ -152,7 +150,8 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/opengl.zig"),
             .imports = backend_imports,
         });
-        opengl_module.linkLibrary(header_lib);
+        opengl_module.addIncludePath(pugl_dep.path("include"));
+        // opengl_module.linkLibrary(lib);
 
         try tests.appendSlice(b.allocator, &.{
             "gl",
@@ -199,7 +198,7 @@ pub fn build(b: *std.Build) !void {
 
                 pugl.linkLibrary(artifact);
                 pugl.addIncludePath(artifact.getEmittedIncludeTree().path(cairo.builder, ""));
-                header_lib.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
+                lib.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
             }
         }
 
@@ -212,7 +211,7 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/cairo.zig"),
             .imports = backend_imports,
         });
-        cairo_module.linkLibrary(header_lib);
+        cairo_module.linkLibrary(lib);
 
         try tests.append(b.allocator, "cairo");
     }
@@ -278,18 +277,13 @@ pub fn build(b: *std.Build) !void {
             }),
         });
         test_exe.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("test/test_{s}.c", .{test_name})) });
-        test_exe.linkLibrary(header_lib);
+        test_exe.linkLibrary(lib);
 
         const run_test = b.addRunArtifact(test_exe);
         run_tests_step.dependOn(&run_test.step);
     }
 
     const docs_step = b.step("docs", "Build API docs");
-
-    const lib = b.addLibrary(.{
-        .name = "pugl",
-        .root_module = pugl,
-    });
 
     const install_docs = b.addInstallDirectory(.{
         .source_dir = lib.getEmittedDocs(),
