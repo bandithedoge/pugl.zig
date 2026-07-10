@@ -147,6 +147,8 @@ pub const BoolHint = enum(c_uint) {
     ignore_key_repeat = c.PUGL_IGNORE_KEY_REPEAT,
     /// True if window frame should be dark
     dark_frame = c.PUGL_DARK_FRAME,
+    /// True if view accepts dropped data
+    accept_drop = c.PUGL_ACCEPT_DROP,
 };
 
 /// Set a boolean hint to configure view properties.
@@ -283,6 +285,16 @@ pub fn getStringHint(self: *const View, hint: pugl.StringHint) [:0]const u8 {
 /// and the scale 2.0 should have text twice that large.
 pub fn getScaleFactor(self: *const View) f64 {
     return c.puglGetScaleFactor(self.view);
+}
+
+/// Register support for accepting a type of dropped data.
+/// Before realizing the view, this should be called to register every type of dragged data the view may accept when dropped.
+pub fn registerDropType(
+    self: *const View,
+    /// The MIME type to accept, "text/plain" is assumed if null.
+    drop_type: []const u8,
+) pugl.Error!void {
+    try errFromStatus(c.puglRegisterDropType(self.view, drop_type.ptr));
 }
 
 /// A 2-dimensional position within/of a view
@@ -637,11 +649,23 @@ pub fn paste(self: *const View) pugl.Error!void {
     try errFromStatus(c.puglPaste(self.view));
 }
 
+/// A system clipboard.
+///
+/// A clipboard provides a mechanism for transferring data between views,
+/// including views in different processes.  Clipboards are used for both "copy
+/// and paste" and "drag and drop" interactions.
+pub const Clipboard = enum(c_uint) {
+    /// General clipboard for copy/pasted data
+    general = c.PUGL_CLIPBOARD_GENERAL,
+    /// Drag clipboard for drag and drop data
+    drag = c.PUGL_CLIPBOARD_DRAG,
+};
+
 /// Return the number of types available for the data in a clipboard.
 ///
 /// Returns zero if the clipboard is empty.
-pub fn getNumClipboardTypes(self: *const View) u32 {
-    return c.puglGetNumClipboardTypes(self.view);
+pub fn getNumClipboardTypes(self: *const View, clipboard: Clipboard) u32 {
+    return c.puglGetNumClipboardTypes(self.view, @intFromEnum(clipboard));
 }
 
 /// Return the identifier of a type available in a clipboard.
@@ -649,9 +673,24 @@ pub fn getNumClipboardTypes(self: *const View) u32 {
 /// This is usually a MIME type, but may also be another platform-specific type identifier.
 /// Applications must ignore any type they do not recognize.
 /// Returns null if `type_index` is out of bounds according to `getNumClipboardTypes`.
-pub fn getClipboardType(self: *const View, type_index: u32) [:0]const u8 {
-    return std.mem.span(c.puglGetClipboardType(self.view, type_index));
+pub fn getClipboardType(self: *const View, clipboard: Clipboard, type_index: u32) [:0]const u8 {
+    return std.mem.span(c.puglGetClipboardType(self.view, @intFromEnum(clipboard), type_index));
 }
+
+// An action that can be performed on data from a clipboard.
+//
+// This is given when accepting a data offer, so the system can provide user
+// feedback, for example by changing the cursor or showing an animation.
+pub const DataAction = enum(c_uint) {
+    /// Data will be copied
+    copy = c.PUGL_DATA_ACTION_COPY,
+    /// Data will be linked to
+    link = c.PUGL_DATA_ACTION_LINK,
+    /// Data will be moved
+    move = c.PUGL_DATA_ACTION_MOVE,
+    /// Unspecified private action
+    private = c.PUGL_DATA_ACTION_PRIVATE,
+};
 
 /// Accept data offered from a clipboard.
 ///
@@ -660,10 +699,56 @@ pub fn getClipboardType(self: *const View, type_index: u32) [:0]const u8 {
 /// When the data is available, an `event.Data` will be sent to the view which can then retrieve the data with
 /// `getClipboard`.
 ///
-/// type_index is the index of the type that the view will accept.
-/// This is the `type_index` argument to the call of `getClipboardType` that returned the accepted type.
-pub fn acceptOffer(self: *const View, offer: *const event.DataOffer, type_index: u32) pugl.Error!void {
-    try errFromStatus(c.puglAcceptOffer(self.view, offer.cast(), type_index));
+/// The region parameters specify a region of the view that will accept the data,
+/// which may be used by the system to avoid sending redundant events.
+pub fn acceptOffer(
+    self: *const View,
+    offer: *const event.DataOffer,
+    /// Index of the type that the view will accept.
+    /// This is the `type_index` argument to the call of `getClipboardType` that returned the accepted type.
+    type_index: u32,
+    action: DataAction,
+    /// View-relative top-left coordinates of the accepting region.
+    region_point: Point,
+    /// Size of the accepting region.
+    region_area: Area,
+) pugl.Error!void {
+    try errFromStatus(c.puglAcceptOffer(
+        self.view,
+        offer.cast(),
+        type_index,
+        @intFromEnum(action),
+        region_point.x,
+        region_point.y,
+        region_area.width,
+        region_area.height,
+    ));
+}
+
+/// Reject data offered from a clipboard.
+///
+/// This can be called instead of `acceptOffer` to explicitly reject the offer.
+/// Note that drag-and-drop will still work if this isn't called,
+/// but applications should always explicitly accept or reject each data offer for optimal behaviour.
+///
+/// The region parameters specify a region of the view that will refuse the data,
+/// which may be used by the system to avoid sending redundant events.
+pub fn rejectOffer(
+    self: *const View,
+    offer: *const event.DataOffer,
+    /// View-relative top-left coordinates of the rejecting region.
+    region_point: Point,
+    /// Size of the rejecting region.
+    region_area: Area,
+) pugl.Error!void {
+    try errFromStatus(c.puglRejectOffer(
+        self.view,
+        offer.cast(),
+        region_point.x,
+        region_point.y,
+        region_area.width,
+        region_area.height,
+    ));
 }
 
 /// Set the clipboard contents.
