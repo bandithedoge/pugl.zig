@@ -818,3 +818,7 @@ pub const Event = union(Type) {
         };
     }
 };
+
+comptime {
+    std.testing.refAllDecls(@This());
+}

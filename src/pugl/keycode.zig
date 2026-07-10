@@ -1,3 +1,5 @@
+const std = @import("std");
+
 const c = @import("c");
 
 /// Keyboard key codepoints.
@@ -89,3 +91,7 @@ pub const Keycode = enum(c_uint) {
         return @intFromEnum(self);
     }
 };
+
+comptime {
+    std.testing.refAllDecls(@This());
+}

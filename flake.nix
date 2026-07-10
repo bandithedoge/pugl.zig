@@ -28,7 +28,7 @@
           ...
         }:
         let
-          zig' = inputs.zig.packages.${system}."0_15_2";
+          zig' = inputs.zig.packages.${system}."0_16_0";
         in
         {
           devShells.default = pkgs.mkShell {
@@ -43,11 +43,12 @@
               cairo
               libGL
               vulkan-loader
-              xorg.libX11
-              xorg.libXcursor
-              xorg.libXext
-              xorg.libXrandr
-              xorg.libXrender
+              libx11
+              libxcursor
+              libxext
+              libxrandr
+              libxrender
+              freetype
             ];
           };
         };

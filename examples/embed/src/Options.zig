@@ -10,13 +10,13 @@ ignore_key_repeat: bool = false,
 
 const Options = @This();
 
-pub fn parse() !Options {
-    var stdout = std.fs.File.stdout().writer(&.{});
+pub fn parse(init: std.process.Init) !Options {
+    var stdout = std.Io.File.stdout().writer(init.io, &.{});
     const writer = &stdout.interface;
 
     var options: Options = .{};
 
-    var arg_iterator = std.process.args();
+    var arg_iterator = init.minimal.args.iterate();
     _ = arg_iterator.skip();
 
     while (arg_iterator.next()) |arg| {
@@ -35,11 +35,11 @@ pub fn parse() !Options {
         else if (std.mem.eql(u8, arg, "-i"))
             options.ignore_key_repeat = true
         else if (std.mem.eql(u8, arg, "-h")) {
-            try Options.printHelp(writer);
+            try Options.printHelp(init, writer);
             std.process.exit(0);
         } else {
             try writer.print("Invalid argument: {s}\n\n", .{arg});
-            try Options.printHelp(writer);
+            try Options.printHelp(init, writer);
             std.process.exit(1);
         }
     }
@@ -47,8 +47,8 @@ pub fn parse() !Options {
     return options;
 }
 
-pub fn printHelp(writer: *std.Io.Writer) !void {
-    var args = std.process.args();
+pub fn printHelp(init: std.process.Init, writer: *std.Io.Writer) !void {
+    var args = init.minimal.args.iterate();
     try writer.print(
         \\Usage: {s} [OPTION]...
         \\

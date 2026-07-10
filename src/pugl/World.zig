@@ -112,3 +112,7 @@ pub fn getTime(self: *const World) f64 {
 pub fn update(self: *const World, timeout: f64) pugl.Error!void {
     try errFromStatus(c.puglUpdate(self.world, timeout));
 }
+
+comptime {
+    std.testing.refAllDecls(@This());
+}

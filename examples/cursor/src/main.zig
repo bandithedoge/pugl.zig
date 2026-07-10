@@ -12,8 +12,8 @@ const App = struct {
     options: Options,
     should_close: bool = false,
 
-    pub fn init() !App {
-        return .{ .options = try Options.parse() };
+    pub fn init(main_init: std.process.Init) !App {
+        return .{ .options = try Options.parse(main_init) };
     }
 
     pub fn cast(ptr: *anyopaque) *App {
@@ -25,8 +25,8 @@ fn getProcAddress(name: [*:0]const u8) ?*const anyopaque {
     return OpenGlBackend.getProcAddress(std.mem.span(name));
 }
 
-pub fn main() !void {
-    var app = try App.init();
+pub fn main(init: std.process.Init) !void {
+    var app = try App.init(init);
 
     var world = try pugl.World.init(.program, .{});
     defer world.deinit();

@@ -9,8 +9,8 @@
             .hash = "N-V-__8AALnoDwD8UNMf-78hqKYkPF8CW2YGKgPFTo-VHunz",
         },
         .cairo = .{
-            .url = "https://github.com/bandithedoge/cairo.zig/archive/98db1d4a9cf2eaf659e58590c5a0bcd1d2663b1a.tar.gz",
-            .hash = "cairo_zig-1.18.4-GbxI8cxhAQCZIqJuH0r3-f6TMjKLYO9m9KY_nzx0a-Yf",
+            .url = "git+https://github.com/bandithedoge/cairo.zig.git#aba6e7312a397bfd123a2451d3c2adf933de129a",
+            .hash = "cairo_zig-1.18.4-GbxI8SemAADoKwHayyTansd6kvX8VlAExKeaTLwDyfkb",
             .lazy = true,
         },
     },

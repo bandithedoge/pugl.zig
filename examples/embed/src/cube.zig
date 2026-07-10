@@ -50,8 +50,8 @@ pub fn display(view: *const pugl.View, distance: f32, angle_x: f32, angle_y: f32
 
         gl.EnableClientState(gl.COLOR_ARRAY);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, &strip_vertices);
-        gl.ColorPointer(3, gl.FLOAT, 0, &strip_color_vertices);
+        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&strip_vertices));
+        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&strip_color_vertices));
         gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 14);
 
         gl.DisableClientState(gl.COLOR_ARRAY);
@@ -62,16 +62,16 @@ pub fn display(view: *const pugl.View, distance: f32, angle_x: f32, angle_y: f32
         gl.EnableClientState(gl.VERTEX_ARRAY);
         gl.EnableClientState(gl.COLOR_ARRAY);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, &front_line_loop);
-        gl.ColorPointer(3, gl.FLOAT, 0, &front_line_loop_colors);
+        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&front_line_loop));
+        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&front_line_loop_colors));
         gl.DrawArrays(gl.LINE_LOOP, 0, 4);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, &back_line_loop);
-        gl.ColorPointer(3, gl.FLOAT, 0, &back_line_loop_colors);
+        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&back_line_loop));
+        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&back_line_loop_colors));
         gl.DrawArrays(gl.LINE_LOOP, 0, 4);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, &side_lines);
-        gl.ColorPointer(3, gl.FLOAT, 0, &side_line_colors);
+        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&side_lines));
+        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&side_line_colors));
         gl.DrawArrays(gl.LINES, 0, 8);
 
         gl.DisableClientState(gl.VERTEX_ARRAY);

@@ -1,3 +1,5 @@
+const std = @import("std");
+
 const pugl = @import("pugl.zig");
 const c = @import("c");
 
@@ -37,4 +39,8 @@ pub inline fn statusFromErr(err: pugl.Error) c.PuglStatus {
         pugl.Error.OutOfMemory => c.PUGL_NO_MEMORY,
         else => c.PUGL_SUCCESS,
     };
+}
+
+comptime {
+    std.testing.refAllDecls(@This());
 }

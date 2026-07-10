@@ -16,7 +16,7 @@ const View = @This();
 /// A newly created view does not correspond to a real system view or window.
 /// It must first be configured, then the system view can be created with `realize`.
 pub fn init(world: *const pugl.World) error{OutOfMemory}!View {
-    return .{ .view = c.puglNewView(world.world) orelse return pugl.Error.OutOfMemory };
+    return .{ .view = c.puglNewView(world.world) orelse return error.OutOfMemory };
 }
 
 /// Free a view created with `init`
@@ -785,4 +785,8 @@ pub fn stopTimer(self: *const View, id: usize) pugl.Error!void {
 /// Returns `Unsupported` if sending events of this type is not supported, `Unknown` if sending the event failed.
 pub fn sendEvent(self: *const View, ev: *const event.Event) pugl.Error!void {
     try errFromStatus(c.puglSendEvent(self.view, ev.cast()));
+}
+
+comptime {
+    std.testing.refAllDecls(@This());
 }

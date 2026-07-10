@@ -74,23 +74,23 @@ pub fn build(b: *std.Build) !void {
 
     switch (platform) {
         .x11 => {
-            pugl.linkSystemLibrary("x11", .{});
-            pugl.linkSystemLibrary("xrender", .{});
+            pugl.linkSystemLibrary("X11", .{});
+            pugl.linkSystemLibrary("Xrender", .{});
 
             try c_flags.append(b.allocator, "-D_POSIX_C_SOURCE=200809L");
 
             if (options.use_xcursor) {
-                pugl.linkSystemLibrary("xcursor", .{});
+                pugl.linkSystemLibrary("Xcursor", .{});
                 try c_flags.append(b.allocator, "-DUSE_XCURSOR=1");
             }
 
             if (options.use_xrandr) {
-                pugl.linkSystemLibrary("xrandr", .{});
+                pugl.linkSystemLibrary("Xrandr", .{});
                 try c_flags.append(b.allocator, "-DUSE_XRANDR=1");
             }
 
             if (options.use_xsync) {
-                pugl.linkSystemLibrary("xext", .{});
+                pugl.linkSystemLibrary("Xext", .{});
                 try c_flags.append(b.allocator, "-DUSE_XSYNC=1");
             }
         },
@@ -276,8 +276,8 @@ pub fn build(b: *std.Build) !void {
                 .optimize = optimize,
             }),
         });
-        test_exe.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("test/test_{s}.c", .{test_name})) });
-        test_exe.linkLibrary(lib);
+        test_exe.root_module.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("test/test_{s}.c", .{test_name})) });
+        test_exe.root_module.linkLibrary(lib);
 
         const run_test = b.addRunArtifact(test_exe);
         run_tests_step.dependOn(&run_test.step);

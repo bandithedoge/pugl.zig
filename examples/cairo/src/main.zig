@@ -15,8 +15,8 @@ const App = struct {
     last_drawn_mouse: Point = .{ .x = 0.0, .y = 0.0 },
     current_mouse: Point = .{ .x = 0.0, .y = 0.0 },
 
-    pub fn init() !App {
-        return .{ .options = try Options.parse() };
+    pub fn init(main_init: std.process.Init) !App {
+        return .{ .options = try Options.parse(main_init) };
     }
 
     pub fn cast(ptr: *anyopaque) *App {
@@ -24,8 +24,8 @@ const App = struct {
     }
 };
 
-pub fn main() !void {
-    var app = try App.init();
+pub fn main(init: std.process.Init) !void {
+    var app = try App.init(init);
 
     var world = try pugl.World.init(.program, .{});
     defer world.deinit();

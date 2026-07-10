@@ -24,8 +24,8 @@ const App = struct {
     distance: f64 = 10,
     mouse_entered: bool = false,
 
-    pub fn init() !App {
-        return .{ .options = try Options.parse() };
+    pub fn init(main_init: std.process.Init) !App {
+        return .{ .options = try Options.parse(main_init) };
     }
 
     pub fn cast(ptr: *anyopaque) *App {
@@ -35,8 +35,8 @@ const App = struct {
 
 const border: pugl.View.Point = .{ .x = 64, .y = 64 };
 
-pub fn main() !void {
-    var app = try App.init();
+pub fn main(init: std.process.Init) !void {
+    var app = try App.init(init);
 
     const world = try pugl.World.init(.program, .{});
     defer world.deinit();
@@ -144,8 +144,8 @@ fn onParentEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!voi
                 gl.EnableClientState(gl.COLOR_ARRAY);
                 defer gl.DisableClientState(gl.COLOR_ARRAY);
 
-                gl.VertexPointer(3, gl.FLOAT, 0, &background_vertices);
-                gl.ColorPointer(3, gl.FLOAT, 0, &background_color_vertices);
+                gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&background_vertices));
+                gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&background_color_vertices));
                 gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 4);
             } else {
                 gl.ClearColor(0, 0, 0, 1);

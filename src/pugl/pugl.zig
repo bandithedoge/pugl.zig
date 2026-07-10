@@ -62,5 +62,5 @@ pub const StringHint = enum(c_uint) {
 };
 
 comptime {
-    std.testing.refAllDeclsRecursive(@This());
+    std.testing.refAllDecls(@This());
 }
