@@ -142,7 +142,7 @@ pub fn build(b: *std.Build) !void {
     };
 
     if (options.backend_opengl) {
-        pugl.linkSystemLibrary("gl", .{});
+        pugl.linkSystemLibrary("GL", .{});
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
 
