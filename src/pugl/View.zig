@@ -757,8 +757,20 @@ pub fn rejectOffer(
 /// applications.
 ///
 // `mime_type` is the MIME type of the data, "text/plain" is assumed if null.
-pub fn setClipboard(self: *const View, comptime T: type, mime_type: ?[:0]const u8, data: []const T) pugl.Error!void {
-    try errFromStatus(c.puglSetClipboard(self.view, mime_type orelse null, data.ptr, data.len));
+pub fn setClipboard(
+    self: *const View,
+    comptime T: type,
+    clipboard_type: Clipboard,
+    mime_type: ?[:0]const u8,
+    data: []const T,
+) pugl.Error!void {
+    try errFromStatus(c.puglSetClipboard(
+        self.view,
+        @intFromEnum(clipboard_type),
+        mime_type orelse null,
+        data.ptr,
+        data.len,
+    ));
 }
 
 /// Get the clipboard contents.
@@ -770,11 +782,12 @@ pub fn setClipboard(self: *const View, comptime T: type, mime_type: ?[:0]const u
 pub fn getClipboard(
     self: *const View,
     comptime T: type,
+    clipboard_type: Clipboard,
     /// Index of the data type to get the item as
     type_index: u32,
 ) ?[]const T {
     var len: usize = 0;
-    const ptr = c.puglGetClipboard(self.view, type_index, &len);
+    const ptr = c.puglGetClipboard(self.view, @intFromEnum(clipboard_type), type_index, &len);
     if (ptr) |data| {
         const result: [*]const T = @ptrCast(data);
         return result[0..len];

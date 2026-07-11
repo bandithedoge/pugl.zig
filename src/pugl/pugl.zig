@@ -62,5 +62,12 @@ pub const StringHint = enum(c_uint) {
 };
 
 comptime {
-    std.testing.refAllDecls(@This());
+    for (.{
+        @This(),
+        event,
+        Keycode,
+        utils,
+        View,
+        World,
+    }) |decl| std.testing.refAllDecls(decl);
 }
