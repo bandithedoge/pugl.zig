@@ -22,8 +22,14 @@ pub fn build(b: *std.Build) !void {
     exe.root_module.addImport("pugl", pugl.module("pugl"));
     exe.root_module.addImport("backend_cairo", pugl.module("backend_cairo"));
 
-    // this artifact includes cairo headers
-    exe.root_module.linkLibrary(pugl.artifact("pugl"));
+    const cairo_headers = pugl.namedLazyPath("cairo_headers");
+    const translate_c = b.addTranslateC(.{
+        .target = target,
+        .optimize = optimize,
+        .root_source_file = cairo_headers.path(b, "cairo.h"),
+    });
+    translate_c.addIncludePath(cairo_headers);
+    exe.root_module.addImport("cairo_c", translate_c.createModule());
 
     b.installArtifact(exe);
 }

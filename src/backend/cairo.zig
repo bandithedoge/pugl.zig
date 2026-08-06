@@ -2,7 +2,7 @@
 
 const pugl_c = @import("c");
 
-const c = @cImport(@cInclude("pugl/cairo.h"));
+const c = @import("cairo_c");
 
 const Cairo = @This();
 

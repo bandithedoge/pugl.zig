@@ -6,7 +6,7 @@ const pugl = @import("pugl");
 const errFromStatus = pugl.utils.errFromStatus;
 const pugl_c = @import("c");
 
-const c = @cImport(@cInclude("pugl/stub.h"));
+const c = @import("stub_c");
 
 const Stub = @This();
 

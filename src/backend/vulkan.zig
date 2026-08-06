@@ -9,7 +9,7 @@ const pugl = @import("pugl");
 const errFromStatus = pugl.utils.errFromStatus;
 const pugl_c = @import("c");
 
-const c = @cImport(@cInclude("pugl/vulkan.h"));
+const c = @import("vulkan_c");
 
 const Vulkan = @This();
 

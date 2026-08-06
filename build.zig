@@ -150,12 +150,19 @@ pub fn build(b: *std.Build) !void {
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
 
+        const opengl_c = b.addTranslateC(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = pugl_dep.path("include/pugl/gl.h"),
+        });
+        opengl_c.addIncludePath(pugl_dep.path("include"));
+        opengl_c.defineCMacro("PUGL_NO_INCLUDE_GL_H", "1");
+
         const opengl_module = b.addModule("backend_opengl", .{
             .root_source_file = b.path("src/backend/opengl.zig"),
             .imports = backend_imports,
         });
-        opengl_module.addIncludePath(pugl_dep.path("include"));
-        // opengl_module.linkLibrary(lib);
+        opengl_module.addImport("opengl_c", opengl_c.createModule());
 
         try tests.appendSlice(b.allocator, &.{
             "gl",
@@ -177,33 +184,37 @@ pub fn build(b: *std.Build) !void {
             pugl.linkFramework("QuartzCore", .{});
         }
 
-        _ = b.addModule("backend_vulkan", .{
+        const vulkan_c = b.addTranslateC(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = pugl_dep.path("include/pugl/vulkan.h"),
+        });
+        vulkan_c.addIncludePath(pugl_dep.path("include"));
+
+        const vulkan_module = b.addModule("backend_vulkan", .{
             .root_source_file = b.path("src/backend/vulkan.zig"),
             .imports = backend_imports,
         });
-        // vulkan_module.linkLibrary(pugl);
+        vulkan_module.addImport("vulkan_c", vulkan_c.createModule());
 
         try tests.append(b.allocator, "vulkan");
     }
 
     if (options.backend_cairo) {
-        if (b.systemIntegrationOption("cairo", .{}))
-            pugl.linkSystemLibrary("cairo", .{})
-        else {
-            if (b.lazyDependency("cairo", .{
-                .target = target,
-                .optimize = optimize,
-                .use_zlib = false,
-                .use_xcb = false,
-                .symbol_lookup = false,
-                .use_glib = false,
-            })) |cairo| {
-                const artifact = cairo.artifact("cairo");
+        if (b.lazyDependency("cairo", .{
+            .target = target,
+            .optimize = optimize,
+            .use_zlib = false,
+            .use_xcb = false,
+            .symbol_lookup = false,
+            .use_glib = false,
+        })) |cairo| {
+            if (b.systemIntegrationOption("cairo", .{}))
+                pugl.linkSystemLibrary("cairo", .{})
+            else
+                pugl.linkLibrary(cairo.artifact("cairo"));
 
-                pugl.linkLibrary(artifact);
-                pugl.addIncludePath(artifact.getEmittedIncludeTree().path(cairo.builder, ""));
-                lib.installHeadersDirectory(artifact.getEmittedIncludeTree().path(cairo.builder, ""), "", .{});
-            }
+            b.addNamedLazyPath("cairo_headers", cairo.namedWriteFiles("headers").getDirectory());
         }
 
         pugl.addCSourceFile(.{
@@ -211,10 +222,18 @@ pub fn build(b: *std.Build) !void {
             .flags = c_flags.items,
         });
 
+        const cairo_c = b.addTranslateC(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = pugl_dep.path("include/pugl/cairo.h"),
+        });
+        cairo_c.addIncludePath(pugl_dep.path("include"));
+
         const cairo_module = b.addModule("backend_cairo", .{
             .root_source_file = b.path("src/backend/cairo.zig"),
             .imports = backend_imports,
         });
+        cairo_module.addImport("cairo_c", cairo_c.createModule());
         cairo_module.linkLibrary(lib);
 
         try tests.append(b.allocator, "cairo");
@@ -226,11 +245,18 @@ pub fn build(b: *std.Build) !void {
             .flags = c_flags.items,
         });
 
-        _ = b.addModule("backend_stub", .{
+        const stub_c = b.addTranslateC(.{
+            .target = target,
+            .optimize = optimize,
+            .root_source_file = pugl_dep.path("include/pugl/stub.h"),
+        });
+        stub_c.addIncludePath(pugl_dep.path("include"));
+
+        const stub_module = b.addModule("backend_stub", .{
             .root_source_file = b.path("src/backend/stub.zig"),
             .imports = backend_imports,
         });
-        // stub_module.linkLibrary(pugl);
+        stub_module.addImport("stub_c", stub_c.createModule());
 
         try tests.appendSlice(b.allocator, &.{
             "cursor",
@@ -260,14 +286,11 @@ pub fn build(b: *std.Build) !void {
         .flags = c_flags.items,
     });
 
-    // b.installArtifact(pugl);
-
     const run_tests_step = b.step("test", "Run tests");
 
     const unit_tests = b.addTest(.{
         .root_module = pugl,
     });
-    // unit_tests.linkLibrary(pugl);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
     run_tests_step.dependOn(&run_unit_tests.step);

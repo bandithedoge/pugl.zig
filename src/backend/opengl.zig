@@ -4,10 +4,7 @@ const pugl = @import("pugl");
 const errFromStatus = pugl.utils.errFromStatus;
 const pugl_c = @import("c");
 
-const c = @cImport({
-    @cDefine("PUGL_NO_INCLUDE_GL_H", "1");
-    @cInclude("pugl/gl.h");
-});
+const c = @import("opengl_c");
 
 const Gl = @This();
 
