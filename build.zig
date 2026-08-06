@@ -142,7 +142,11 @@ pub fn build(b: *std.Build) !void {
     };
 
     if (options.backend_opengl) {
-        pugl.linkSystemLibrary("GL", .{});
+        switch (platform) {
+            .x11 => pugl.linkSystemLibrary("gl", .{}),
+            .win => pugl.linkSystemLibrary("opengl32", .{}),
+            else => {},
+        }
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
 

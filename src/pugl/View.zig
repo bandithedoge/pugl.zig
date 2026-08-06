@@ -2,6 +2,7 @@ const std = @import("std");
 const pugl = @import("pugl.zig");
 const c = @import("c");
 const event = @import("event.zig");
+const options = @import("pugl_options");
 
 const utils = @import("utils.zig");
 const errFromStatus = utils.errFromStatus;
@@ -741,14 +742,17 @@ pub fn rejectOffer(
     /// Size of the rejecting region.
     region_area: Area,
 ) pugl.Error!void {
-    try errFromStatus(c.puglRejectOffer(
-        self.view,
-        offer.cast(),
-        region_point.x,
-        region_point.y,
-        region_area.width,
-        region_area.height,
-    ));
+    switch (options.platform) {
+        .x11 => try errFromStatus(c.puglRejectOffer(
+            self.view,
+            offer.cast(),
+            region_point.x,
+            region_point.y,
+            region_area.width,
+            region_area.height,
+        )),
+        else => @panic("rejectOffer is only implemented for X11"),
+    }
 }
 
 /// Set the clipboard contents.
