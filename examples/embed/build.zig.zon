@@ -9,8 +9,8 @@
         },
 
         .zigglgen = .{
-            .url = "git+https://github.com/castholm/zigglgen.git#fdf06cc7ea9951203f91a27a5548f943cd6c1d59",
-            .hash = "zigglgen-0.5.1-ziggljvILwAsVanrBL96ZTzHPQ1vIQCV_Gnt3mqufzjz",
+            .url = "git+https://github.com/castholm/zigglgen.git#6a9fd2acf8ef0ed1c407d96d09b74a12d714a979",
+            .hash = "zigglgen-0.5.0-zigglszILwDmtiBF_lStJ_CwmVJLEXblMpk8iNtaZU32",
         },
     },
 
