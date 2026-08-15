@@ -826,7 +826,7 @@ pub const Cursor = enum(c_uint) {
 };
 
 test Cursor {
-    try std.testing.expectEqual(c.PUGL_NUM_CURSORS, std.meta.fields(Cursor).len);
+    try std.testing.expectEqual(c.PUGL_NUM_CURSORS, @typeInfo(Cursor).@"enum".field_names.len);
 }
 
 /// Set the mouse cursor.
