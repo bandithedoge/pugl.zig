@@ -20,8 +20,9 @@ pub fn build(b: *std.Build) !void {
     };
 
     const options_step = b.addOptions();
-    inline for (std.meta.fields(@TypeOf(options))) |option| {
-        options_step.addOption(option.type, option.name, @field(options, option.name));
+    const options_info = @typeInfo(@TypeOf(options)).@"struct";
+    inline for (options_info.field_names, options_info.field_types) |option_name, option_type| {
+        options_step.addOption(option_type, option_name, @field(options, option_name));
     }
 
     const platform: enum { x11, mac, win } = switch (target.result.os.tag) {
