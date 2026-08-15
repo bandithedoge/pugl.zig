@@ -2,7 +2,7 @@ Zig bindings for [Pugl](https://gitlab.com/lv2/pugl), a minimal portable API for
 
 # Dependencies
 
-- Zig 0.14.0
+- Zig (`main` branch tracks latest stable, `dev` tries to keep up with nightly)
 - X11 platform:
   - libX11
   - libXrender
