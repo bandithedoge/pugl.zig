@@ -1,7 +1,7 @@
 .{
     .name = .pugl,
     .version = "0.1.0",
-    .minimum_zig_version = "0.15.1",
+    .minimum_zig_version = "0.16.0",
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
