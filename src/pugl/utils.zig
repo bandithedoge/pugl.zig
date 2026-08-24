@@ -12,6 +12,7 @@ pub inline fn errFromStatus(status: c.PuglStatus) pugl.Error!void {
         c.PUGL_BAD_BACKEND => pugl.Error.BadBackend,
         c.PUGL_BAD_CONFIGURATION => pugl.Error.BadConfiguration,
         c.PUGL_BAD_PARAMETER => pugl.Error.BadParameter,
+        c.PUGL_BAD_CALL => pugl.Error.BadCall,
         c.PUGL_BACKEND_FAILED => pugl.Error.BackendFailed,
         c.PUGL_REGISTRATION_FAILED => pugl.Error.RegistrationFailed,
         c.PUGL_REALIZE_FAILED => pugl.Error.RealizeFailed,
@@ -30,6 +31,7 @@ pub inline fn statusFromErr(err: pugl.Error) c.PuglStatus {
         pugl.Error.BadBackend => c.PUGL_BAD_BACKEND,
         pugl.Error.BadConfiguration => c.PUGL_BAD_CONFIGURATION,
         pugl.Error.BadParameter => c.PUGL_BAD_PARAMETER,
+        pugl.Error.BadCall => c.PUGL_BAD_CALL,
         pugl.Error.BackendFailed => c.PUGL_BACKEND_FAILED,
         pugl.Error.RegistrationFailed => c.PUGL_REGISTRATION_FAILED,
         pugl.Error.RealizeFailed => c.PUGL_REALIZE_FAILED,
@@ -37,7 +39,6 @@ pub inline fn statusFromErr(err: pugl.Error) c.PuglStatus {
         pugl.Error.CreateContextFailed => c.PUGL_CREATE_CONTEXT_FAILED,
         pugl.Error.Unsupported => c.PUGL_UNSUPPORTED,
         pugl.Error.OutOfMemory => c.PUGL_NO_MEMORY,
-        else => c.PUGL_SUCCESS,
     };
 }
 

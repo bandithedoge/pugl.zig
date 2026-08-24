@@ -14,7 +14,6 @@ pub const Backend = struct {
 };
 
 pub const Error = error{
-    _,
     /// Non-fatal failure
     Failure,
     /// Unknown system error
@@ -25,6 +24,8 @@ pub const Error = error{
     BadConfiguration,
     /// Invalid parameter
     BadParameter,
+    /// Invalid call
+    BadCall,
     /// Backend initialization failed
     BackendFailed,
     /// Class registration failed
