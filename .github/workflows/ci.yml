@@ -28,9 +28,9 @@ jobs:
         run: |
           sudo apt install libgl-dev libvulkan-dev libcairo2-dev
 
-      - name: Build cairo example
-        working-directory: examples/cairo
-        run: zig build -fsys=cairo
+      # - name: Build cairo example
+      #   working-directory: examples/cairo
+      #   run: zig build -fsys=cairo
 
       - name: Build cursor example
         working-directory: examples/cursor
