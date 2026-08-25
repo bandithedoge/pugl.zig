@@ -13,6 +13,11 @@
             .hash = "cairo_zig-1.18.4-GbxI8SqnAACNAKk8IrZSGdtOCu97i7yMzGiLn-LdBscS",
             .lazy = true,
         },
+        .wio_macos_sdk = .{
+            .url = "git+https://github.com/ypsvlq/wio-macos-sdk.git#1b2c83864c5db8a0007ec48a2cbd691b6e96d952",
+            .hash = "wio_macos_sdk-15.5.0-Q4Y7w9_8sQFGUqhS1rjfcBpeKvEwfNTWfQAWGzbARfuK",
+            .lazy = true,
+        },
     },
     .paths = .{
         "build.zig",

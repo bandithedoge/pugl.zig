@@ -95,6 +95,13 @@ pub fn build(b: *std.Build) !void {
             }
         },
         .mac => {
+            if (b.lazyDependency("wio_macos_sdk", .{})) |macos_sdk| {
+                pugl.addSystemFrameworkPath(macos_sdk.path("System/Library/Frameworks"));
+                pugl.addSystemIncludePath(macos_sdk.path("usr/include"));
+            }
+            pugl.linkFramework("AppKit", .{});
+            pugl.linkFramework("Foundation", .{});
+            pugl.linkFramework("CoreVideo", .{});
             pugl.linkFramework("Cocoa", .{});
         },
         .win => {
