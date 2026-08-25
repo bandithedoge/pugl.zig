@@ -5,7 +5,11 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -14,19 +18,21 @@ jobs:
         uses: mlugg/setup-zig@v2
 
       - name: Check formatting
-        run: zig fmt --check .
+        run: zig fmt --check . --exclude zig-pkg --exclude .zig-cache
 
       - name: Install dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           sudo apt update
-          sudo apt install libx11-dev libxrender-dev libxcursor-dev libxrandr-dev libxext-dev
+          sudo apt install -y libx11-dev libxrender-dev libxcursor-dev libxrandr-dev libxext-dev
 
       - name: Run unit tests
         run: zig build test
 
       - name: Install backend dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          sudo apt install libgl-dev libvulkan-dev libcairo2-dev
+          sudo apt install -y libgl-dev libvulkan-dev libcairo2-dev
 
       # - name: Build cairo example
       #   working-directory: examples/cairo
