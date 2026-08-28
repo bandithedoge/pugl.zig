@@ -96,6 +96,7 @@ pub fn build(b: *std.Build) !void {
         },
         .mac => {
             pugl.linkFramework("Cocoa", .{});
+            pugl.linkFramework("CoreVideo", .{});
         },
         .win => {
             try c_flags.appendSlice(b.allocator, &.{
