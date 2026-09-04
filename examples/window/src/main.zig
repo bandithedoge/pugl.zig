@@ -7,8 +7,6 @@ const OpenGlBackend = @import("backend_opengl");
 const Options = @import("Options.zig");
 const cube = @import("cube.zig");
 
-var procs: gl.ProcTable = undefined;
-
 const Cube = struct {
     view: pugl.View,
     last_draw_time: f64 = 0,
@@ -76,8 +74,7 @@ pub fn main(init: std.process.Init) !void {
         const backend = OpenGlBackend.init(c.view);
         try c.view.setBackend(backend.backend);
 
-        if (!procs.init(getProcAddress))
-            return error.BackendFailed;
+        try gl.load(getProcAddress);
 
         try c.view.setBoolHint(.context_debug, app.options.error_checking);
         try c.view.setBoolHint(.resizable, app.options.resizable);
@@ -128,25 +125,16 @@ fn onEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
     const app = App.cast(world.getHandle().?);
 
     switch (event) {
-        .configure => |e| {
-            gl.makeProcTableCurrent(&procs);
-            defer gl.makeProcTableCurrent(null);
-            cube.reshape(.{ .width = e.width, .height = e.height });
-        },
         .update => if (app.options.continuous) try view.obscure(),
         .expose => {
             const this_time = world.getTime();
+            cube.reshape(.{ .width = view.getSizeHint(.current).width, .height = view.getSizeHint(.current).height });
             if (app.options.continuous) {
                 const d_time: f32 = @floatCast(this_time - c.last_draw_time);
                 c.x_angle = @mod(c.x_angle + (d_time * 100), 360);
                 c.y_angle = @mod(c.y_angle + (d_time * 100), 360);
             }
-
-            gl.makeProcTableCurrent(&procs);
-            defer gl.makeProcTableCurrent(null);
-
             cube.display(view, c.dist, c.x_angle, c.y_angle, c.entered);
-
             c.last_draw_time = this_time;
         },
         .close => app.should_close = true,

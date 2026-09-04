@@ -2,16 +2,16 @@ const pugl = @import("pugl");
 const gl = @import("gl");
 
 pub fn reshape(size: pugl.View.Area) void {
-    gl.Enable(gl.CULL_FACE);
-    gl.CullFace(gl.BACK);
-    gl.FrontFace(gl.CW);
+    gl.enable(gl.CULL_FACE);
+    gl.cullFace(gl.BACK);
+    gl.frontFace(gl.CW);
 
-    gl.Enable(gl.DEPTH_TEST);
-    gl.DepthFunc(gl.LESS);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LESS);
 
-    gl.MatrixMode(gl.PROJECTION);
-    gl.LoadIdentity();
-    gl.Viewport(0, 0, @intCast(size.width), @intCast(size.height));
+    gl.matrixMode(gl.PROJECTION);
+    gl.loadIdentity();
+    gl.viewport(0, 0, @intCast(size.width), @intCast(size.height));
 
     const fov = 1.8;
     const aspect = size.width / size.height;
@@ -28,53 +28,53 @@ pub fn reshape(size: pugl.View.Area) void {
         0, 0, q,  -1,
         0, 0, qn, 0,
     };
-    gl.LoadMatrixf(&projection);
+    gl.loadMatrixf(&projection);
 }
 
 pub fn display(view: *const pugl.View, distance: f32, angle_x: f32, angle_y: f32, entered: bool) void {
-    gl.MatrixMode(gl.MODELVIEW);
-    gl.LoadIdentity();
-    gl.Translatef(0, 0, -distance);
-    gl.Rotatef(angle_x, 0, 1, 0);
-    gl.Rotatef(angle_y, 1, 0, 0);
+    gl.matrixMode(gl.MODELVIEW);
+    gl.loadIdentity();
+    gl.translatef(0, 0, -distance);
+    gl.rotatef(angle_x, 0, 1, 0);
+    gl.rotatef(angle_y, 1, 0, 0);
 
     if (entered)
-        gl.ClearColor(0.13, 0.14, 0.14, 1)
+        gl.clearColor(0.13, 0.14, 0.14, 1)
     else
-        gl.ClearColor(0, 0, 0, 1);
+        gl.clearColor(0, 0, 0, 1);
 
-    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     if (view.hasFocus()) {
-        gl.EnableClientState(gl.VERTEX_ARRAY);
+        gl.enableClientState(gl.VERTEX_ARRAY);
 
-        gl.EnableClientState(gl.COLOR_ARRAY);
+        gl.enableClientState(gl.COLOR_ARRAY);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&strip_vertices));
-        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&strip_color_vertices));
-        gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 14);
+        gl.vertexPointer(3, gl.FLOAT, 0, &strip_vertices);
+        gl.colorPointer(3, gl.FLOAT, 0, &strip_color_vertices);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 14);
 
-        gl.DisableClientState(gl.COLOR_ARRAY);
-        gl.DisableClientState(gl.VERTEX_ARRAY);
+        gl.disableClientState(gl.COLOR_ARRAY);
+        gl.disableClientState(gl.VERTEX_ARRAY);
 
-        gl.Color3f(0, 0, 0);
+        gl.color3f(0, 0, 0);
     } else {
-        gl.EnableClientState(gl.VERTEX_ARRAY);
-        gl.EnableClientState(gl.COLOR_ARRAY);
+        gl.enableClientState(gl.VERTEX_ARRAY);
+        gl.enableClientState(gl.COLOR_ARRAY);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&front_line_loop));
-        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&front_line_loop_colors));
-        gl.DrawArrays(gl.LINE_LOOP, 0, 4);
+        gl.vertexPointer(3, gl.FLOAT, 0, &front_line_loop);
+        gl.colorPointer(3, gl.FLOAT, 0, &front_line_loop_colors);
+        gl.drawArrays(gl.LINE_LOOP, 0, 4);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&back_line_loop));
-        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&back_line_loop_colors));
-        gl.DrawArrays(gl.LINE_LOOP, 0, 4);
+        gl.vertexPointer(3, gl.FLOAT, 0, &back_line_loop);
+        gl.colorPointer(3, gl.FLOAT, 0, &back_line_loop_colors);
+        gl.drawArrays(gl.LINE_LOOP, 0, 4);
 
-        gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&side_lines));
-        gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&side_line_colors));
-        gl.DrawArrays(gl.LINES, 0, 8);
+        gl.vertexPointer(3, gl.FLOAT, 0, &side_lines);
+        gl.colorPointer(3, gl.FLOAT, 0, &side_line_colors);
+        gl.drawArrays(gl.LINES, 0, 8);
 
-        gl.DisableClientState(gl.VERTEX_ARRAY);
+        gl.disableClientState(gl.VERTEX_ARRAY);
     }
 }
 
