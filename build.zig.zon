@@ -5,7 +5,7 @@
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
-            .url = "git+https://github.com/nat3Github/zig-lib-pugl-c-dev-fork#266bea48d65608af48ad7f32d4306c1548be06c3",
+            .url = "git+https://github.com/nat3Github/c-lib-pugl-dev#266bea48d65608af48ad7f32d4306c1548be06c3",
             .hash = "pugl-0.4.0-sVTl0TNnBQBSjAyctAh5h6b6dAWgH36eN9OOywpCF8BT",
         },
         .cairo = .{
