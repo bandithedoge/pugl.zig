@@ -22,13 +22,12 @@ pub fn build(b: *std.Build) !void {
     exe.root_module.addImport("pugl", pugl.module("pugl"));
     exe.root_module.addImport("backend_opengl", pugl.module("backend_opengl"));
 
-    const gl = @import("zigglgen").generateBindingsModule(b, .{
-        .api = .gl,
-        .version = .@"3.3",
-        .profile = .compatibility,
+    const opengl = b.dependency("opengl", .{
+        .major_version = 3,
+        .minor_version = 3,
     });
 
-    exe.root_module.addImport("gl", gl);
+    exe.root_module.addImport("gl", opengl.module("opengl"));
 
     b.installArtifact(exe);
 }
