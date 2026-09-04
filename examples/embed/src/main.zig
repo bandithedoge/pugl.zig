@@ -13,7 +13,6 @@ const App = struct {
 
     parent: pugl.View = undefined,
     child: pugl.View = undefined,
-    procs: gl.ProcTable = undefined,
 
     last_draw_time: f64 = 0,
     reversing: bool = false,
@@ -43,8 +42,7 @@ pub fn main(init: std.process.Init) !void {
 
     try world.setHint(.class_name, "PuglEmbedDemo");
 
-    if (!app.procs.init(getProcAddress))
-        return pugl.Error.BackendFailed;
+    try gl.load(getProcAddress);
 
     app.parent = try pugl.View.init(&world);
     defer app.parent.deinit();
@@ -120,36 +118,29 @@ fn onParentEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!voi
     const app = App.cast(view.getHandle().?);
     switch (event) {
         .configure => |e| {
-            gl.makeProcTableCurrent(&app.procs);
-            defer gl.makeProcTableCurrent(null);
-
-            cube.reshape(.{ .width = e.width, .height = e.height });
-            try view.setSizeHint(.current, .{
+            try app.child.setSizeHint(.current, .{
                 .width = e.width - (2 * border.x),
                 .height = e.height - (2 * border.y),
             });
         },
         .update => if (app.options.continuous) try view.obscure(),
         .expose => {
-            gl.makeProcTableCurrent(&app.procs);
-            defer gl.makeProcTableCurrent(null);
-
             if (view.hasFocus()) {
-                gl.MatrixMode(gl.MODELVIEW);
-                gl.LoadIdentity();
-                gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                gl.matrixMode(gl.MODELVIEW);
+                gl.loadIdentity();
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-                gl.EnableClientState(gl.VERTEX_ARRAY);
-                defer gl.DisableClientState(gl.VERTEX_ARRAY);
-                gl.EnableClientState(gl.COLOR_ARRAY);
-                defer gl.DisableClientState(gl.COLOR_ARRAY);
+                gl.enableClientState(gl.VERTEX_ARRAY);
+                defer gl.disableClientState(gl.VERTEX_ARRAY);
+                gl.enableClientState(gl.COLOR_ARRAY);
+                defer gl.disableClientState(gl.COLOR_ARRAY);
 
-                gl.VertexPointer(3, gl.FLOAT, 0, @intFromPtr(&background_vertices));
-                gl.ColorPointer(3, gl.FLOAT, 0, @intFromPtr(&background_color_vertices));
-                gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                gl.vertexPointer(3, gl.FLOAT, 0, &background_vertices);
+                gl.colorPointer(3, gl.FLOAT, 0, &background_color_vertices);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             } else {
-                gl.ClearColor(0, 0, 0, 1);
-                gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                gl.clearColor(0, 0, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             }
         },
         .key_press => |e| try onKeyPress(view, e),
@@ -161,24 +152,16 @@ fn onParentEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!voi
 fn onChildEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
     const app = App.cast(view.getHandle().?);
     switch (event) {
-        .configure => |e| {
-            gl.makeProcTableCurrent(&app.procs);
-            defer gl.makeProcTableCurrent(null);
-
-            cube.reshape(.{ .width = e.width, .height = e.height });
-        },
         .update => if (app.options.continuous) try view.obscure(),
         .expose => {
             const world = view.getWorld();
             const this_time = world.getTime();
+            cube.reshape(.{ .width = view.getSizeHint(.current).width, .height = view.getSizeHint(.current).height });
             if (app.options.continuous) {
                 const d_time = (this_time - app.last_draw_time) * if (app.reversing) @as(f64, -1) else @as(f64, 1);
                 app.angle_x = @mod(app.angle_x + (d_time * 100.0), 360.0);
                 app.angle_y = @mod(app.angle_y + (d_time * 100.0), 360.0);
             }
-
-            gl.makeProcTableCurrent(&app.procs);
-            defer gl.makeProcTableCurrent(null);
 
             cube.display(
                 view,

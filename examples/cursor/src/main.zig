@@ -6,8 +6,6 @@ const pugl = @import("pugl");
 
 const Options = @import("Options.zig");
 
-var procs: gl.ProcTable = undefined;
-
 const App = struct {
     options: Options,
     should_close: bool = false,
@@ -44,8 +42,7 @@ pub fn main(init: std.process.Init) !void {
     const backend = OpenGlBackend.init(view);
     try view.setBackend(backend.backend);
 
-    if (!procs.init(getProcAddress))
-        return error.BackendFailed;
+    try gl.load(getProcAddress);
 
     try view.setBoolHint(.context_debug, app.options.error_checking);
     try view.setBoolHint(.resizable, app.options.resizable);
@@ -74,16 +71,13 @@ fn onEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
 
     switch (event) {
         .configure => |e| {
-            gl.makeProcTableCurrent(&procs);
-            defer gl.makeProcTableCurrent(null);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LESS);
+            gl.clearColor(0.2, 0.2, 0.2, 1);
 
-            gl.Enable(gl.DEPTH_TEST);
-            gl.DepthFunc(gl.LESS);
-            gl.ClearColor(0.2, 0.2, 0.2, 1);
-
-            gl.MatrixMode(gl.PROJECTION);
-            gl.LoadIdentity();
-            gl.Viewport(0, 0, e.width, e.height);
+            gl.matrixMode(gl.PROJECTION);
+            gl.loadIdentity();
+            gl.viewport(0, 0, e.width, e.height);
         },
         .key_press => |e| if (e.key == 'q' or e.key == pugl.Keycode.escape.int()) {
             app.should_close = true;
@@ -104,28 +98,25 @@ fn onEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
             try view.setCursor(@enumFromInt(cursor));
         },
         .expose => {
-            gl.makeProcTableCurrent(&procs);
-            defer gl.makeProcTableCurrent(null);
-
-            gl.MatrixMode(gl.MODELVIEW);
-            gl.LoadIdentity();
-            gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            gl.Color3f(0.6, 0.6, 0.6);
+            gl.matrixMode(gl.MODELVIEW);
+            gl.loadIdentity();
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.color3f(0.6, 0.6, 0.6);
 
             for (1..n_rows) |i| {
                 const y = (@as(f32, @floatFromInt(i)) * (2.0 / n_rows)) - 1.0;
-                gl.Begin(gl.LINES);
-                defer gl.End();
-                gl.Vertex2f(-1, y);
-                gl.Vertex2f(1, y);
+                gl.begin(gl.LINES);
+                defer gl.end();
+                gl.vertex2f(-1, y);
+                gl.vertex2f(1, y);
             }
 
             for (1..n_cols) |i| {
                 const x = (@as(f32, @floatFromInt(i)) * (2.0 / n_cols)) - 1.0;
-                gl.Begin(gl.LINES);
-                defer gl.End();
-                gl.Vertex2f(x, -1);
-                gl.Vertex2f(x, 1);
+                gl.begin(gl.LINES);
+                defer gl.end();
+                gl.vertex2f(x, -1);
+                gl.vertex2f(x, 1);
             }
         },
         .pointer_out => try view.setCursor(.arrow),

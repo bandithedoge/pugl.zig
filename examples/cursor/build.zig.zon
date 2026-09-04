@@ -7,10 +7,9 @@
         .pugl = .{
             .path = "../..",
         },
-
-        .zigglgen = .{
-            .url = "git+https://github.com/castholm/zigglgen.git#fdf06cc7ea9951203f91a27a5548f943cd6c1d59",
-            .hash = "zigglgen-0.5.1-ziggljvILwAsVanrBL96ZTzHPQ1vIQCV_Gnt3mqufzjz",
+        .opengl = .{
+            .url = "git+https://github.com/ypsvlq/opengl.git#34adadee89dd2107f7594b164f020e83aafb234c",
+            .hash = "opengl-0.0.0-_Vp8-OnvKgBvhDxpOiCHe118Bf9B0i4VTbsJhMzYYOgk",
         },
     },
 
