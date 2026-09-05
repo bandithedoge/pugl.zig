@@ -16,7 +16,8 @@ pub fn parse(init: std.process.Init) !Options {
 
     var options: Options = .{};
 
-    var arg_iterator = init.minimal.args.iterate();
+    var arg_iterator = try init.minimal.args.iterateAllocator(init.gpa);
+    defer arg_iterator.deinit();
     _ = arg_iterator.skip();
 
     while (arg_iterator.next()) |arg| {
@@ -48,7 +49,8 @@ pub fn parse(init: std.process.Init) !Options {
 }
 
 pub fn printHelp(init: std.process.Init, writer: *std.Io.Writer) !void {
-    var args = init.minimal.args.iterate();
+    var args = try init.minimal.args.iterateAllocator(init.gpa);
+    defer args.deinit();
     try writer.print(
         \\Usage: {s} [OPTION]...
         \\
