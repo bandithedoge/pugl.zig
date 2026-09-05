@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
@@ -74,27 +75,48 @@ pub fn build(b: *std.Build) !void {
 
     switch (platform) {
         .x11 => {
-            pugl.linkSystemLibrary("X11", .{});
-            pugl.linkSystemLibrary("Xrender", .{});
+            const cross_linux = builtin.os.tag != .linux;
+            const use_pkg_config: std.Build.Module.SystemLib.UsePkgConfig = if (cross_linux) .no else .yes;
+            if (cross_linux) {
+                const include_path = b.option(std.Build.LazyPath, "system_include_path", "Linux sysroot include path (for cross-compiling to Linux)");
+                const library_path = b.option(std.Build.LazyPath, "library_path", "Linux sysroot library path (for cross-compiling to Linux)");
+                if (include_path) |p| pugl.addSystemIncludePath(p);
+                if (library_path) |p| pugl.addLibraryPath(p);
+                if (include_path == null or library_path == null) {
+                    std.debug.print("error: cross-compiling to Linux requires -Dsystem_include_path and -Dlibrary_path pointing at a Linux sysroot's usr/include and usr/lib (X11/GL headers+libs)\n", .{});
+                    std.process.exit(1);
+                }
+            }
+
+            pugl.linkSystemLibrary("X11", .{ .use_pkg_config = use_pkg_config });
+            pugl.linkSystemLibrary("Xrender", .{ .use_pkg_config = use_pkg_config });
 
             try c_flags.append(b.allocator, "-D_POSIX_C_SOURCE=200809L");
 
             if (options.use_xcursor) {
-                pugl.linkSystemLibrary("Xcursor", .{});
+                pugl.linkSystemLibrary("Xcursor", .{ .use_pkg_config = use_pkg_config });
                 try c_flags.append(b.allocator, "-DUSE_XCURSOR=1");
             }
 
             if (options.use_xrandr) {
-                pugl.linkSystemLibrary("Xrandr", .{});
+                pugl.linkSystemLibrary("Xrandr", .{ .use_pkg_config = use_pkg_config });
                 try c_flags.append(b.allocator, "-DUSE_XRANDR=1");
             }
 
             if (options.use_xsync) {
-                pugl.linkSystemLibrary("Xext", .{});
+                pugl.linkSystemLibrary("Xext", .{ .use_pkg_config = use_pkg_config });
                 try c_flags.append(b.allocator, "-DUSE_XSYNC=1");
             }
         },
         .mac => {
+            if (b.sysroot) |sysroot| {
+                pugl.addSystemFrameworkPath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "System/Library/Frameworks" }) });
+                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/include" }) });
+            } else if (builtin.target.os.tag != .macos) {
+                std.debug.print("error: cross-compiling to macOS requires --sysroot pointing at a macOS SDK\n", .{});
+                std.process.exit(1);
+            }
+
             pugl.linkFramework("Cocoa", .{});
             pugl.linkFramework("CoreVideo", .{});
         },
@@ -144,7 +166,10 @@ pub fn build(b: *std.Build) !void {
 
     if (options.backend_opengl) {
         switch (platform) {
-            .x11 => pugl.linkSystemLibrary("gl", .{}),
+            // "GL" (not lowercase "gl") to match the actual libGL.so/.a name on Linux.
+            .x11 => pugl.linkSystemLibrary("GL", .{
+                .use_pkg_config = if (builtin.os.tag != .linux) .no else .yes,
+            }),
             .win => pugl.linkSystemLibrary("opengl32", .{}),
             else => {},
         }
