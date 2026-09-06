@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
@@ -74,6 +75,14 @@ pub fn build(b: *std.Build) !void {
 
     switch (platform) {
         .x11 => {
+            if (b.sysroot) |sysroot| {
+                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/include" }) });
+                pugl.addLibraryPath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/lib" }) });
+            } else if (builtin.target.os.tag != .linux) {
+                std.debug.print("error: cross-compiling to Linux requires --sysroot pointing at a Linux sysroot\n", .{});
+                std.process.exit(1);
+            }
+
             pugl.linkSystemLibrary("X11", .{});
             pugl.linkSystemLibrary("Xrender", .{});
 
@@ -95,6 +104,14 @@ pub fn build(b: *std.Build) !void {
             }
         },
         .mac => {
+            if (b.sysroot) |sysroot| {
+                pugl.addSystemFrameworkPath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "System/Library/Frameworks" }) });
+                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/include" }) });
+            } else if (builtin.target.os.tag != .macos) {
+                std.debug.print("error: cross-compiling to macOS requires --sysroot pointing at a macOS SDK\n", .{});
+                std.process.exit(1);
+            }
+
             pugl.linkFramework("Cocoa", .{});
             pugl.linkFramework("CoreVideo", .{});
         },
@@ -144,7 +161,8 @@ pub fn build(b: *std.Build) !void {
 
     if (options.backend_opengl) {
         switch (platform) {
-            .x11 => pugl.linkSystemLibrary("gl", .{}),
+            // "GL" (not lowercase "gl") to match the actual libGL.so/.a name on Linux.
+            .x11 => pugl.linkSystemLibrary("GL", .{}),
             .win => pugl.linkSystemLibrary("opengl32", .{}),
             else => {},
         }
