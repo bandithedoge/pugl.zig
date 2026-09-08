@@ -784,8 +784,8 @@ pub const Event = union(Type) {
     data: Data,
 
     pub fn cast(self: *const Event) *const c.PuglEvent {
-        return switch (self) {
-            else => |ev| ev.cast(),
+        return switch (self.*) {
+            inline else => |ev| @ptrCast(&ev.cast()),
         };
     }
 
