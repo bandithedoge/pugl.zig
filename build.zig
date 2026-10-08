@@ -21,10 +21,12 @@ pub fn build(b: *std.Build) !void {
     };
 
     const options_step = b.addOptions();
-    const options_info = @typeInfo(@TypeOf(options)).@"struct";
-    inline for (options_info.field_names, options_info.field_types) |option_name, option_type| {
+    const OptionsTypeInfo = @typeInfo(@TypeOf(options)).@"struct";
+    inline for (OptionsTypeInfo.field_names, OptionsTypeInfo.field_types) |option_name, option_type| {
         options_step.addOption(option_type, option_name, @field(options, option_name));
     }
+
+    const sysroot = b.option([]const u8, "sysroot", "Path ponting to linux sysroot or macOS SDK") orelse null;
 
     const platform: enum { x11, mac, win } = switch (target.result.os.tag) {
         .linux, .freebsd, .openbsd, .netbsd, .dragonfly => .x11,
@@ -76,11 +78,11 @@ pub fn build(b: *std.Build) !void {
 
     switch (platform) {
         .x11 => {
-            if (b.sysroot) |sysroot| {
-                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/include" }) });
-                pugl.addLibraryPath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/lib" }) });
+            if (sysroot) |sysr| {
+                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysr, "usr/include" }) });
+                pugl.addLibraryPath(.{ .cwd_relative = b.pathJoin(&.{ sysr, "usr/lib" }) });
             } else if (builtin.target.os.tag != .linux) {
-                std.debug.print("error: cross-compiling to Linux requires --sysroot pointing at a Linux sysroot\n", .{});
+                std.debug.print("error: cross-compiling to Linux requires -Dsysroot pointing at a Linux sysroot\n", .{});
                 std.process.exit(1);
             }
 
@@ -105,11 +107,11 @@ pub fn build(b: *std.Build) !void {
             }
         },
         .mac => {
-            if (b.sysroot) |sysroot| {
-                pugl.addSystemFrameworkPath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "System/Library/Frameworks" }) });
-                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysroot, "usr/include" }) });
+            if (sysroot) |sysr| {
+                pugl.addSystemFrameworkPath(.{ .cwd_relative = b.pathJoin(&.{ sysr, "System/Library/Frameworks" }) });
+                pugl.addSystemIncludePath(.{ .cwd_relative = b.pathJoin(&.{ sysr, "usr/include" }) });
             } else if (builtin.target.os.tag != .macos) {
-                std.debug.print("error: cross-compiling to macOS requires --sysroot pointing at a macOS SDK\n", .{});
+                std.debug.print("error: cross-compiling to macOS requires -Dsysroot pointing at a macOS SDK\n", .{});
                 std.process.exit(1);
             }
 

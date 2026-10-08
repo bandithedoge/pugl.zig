@@ -122,7 +122,7 @@ pub const IntHint = enum(c_uint) {
 ///
 /// This only has an effect when called before `realize`.
 pub fn setIntHint(self: *const View, hint: IntHint, value: ?u31) pugl.Error!void {
-    try errFromStatus(c.puglSetViewHint(self.view, @intFromEnum(hint), value orelse c.PUGL_DONT_CARE));
+    try errFromStatus(c.puglSetViewHint(self.view, @backingInt(hint), value orelse c.PUGL_DONT_CARE));
 }
 
 /// Get the integer value for a view hint.
@@ -133,7 +133,7 @@ pub fn setIntHint(self: *const View, hint: IntHint, value: ?u31) pugl.Error!void
 /// this can be used to get the actual value of a hint which was initially set to `null`,
 /// or has been adjusted from the suggested value.
 pub fn getIntHint(self: *const View, hint: IntHint) ?u32 {
-    const res = c.puglGetViewHint(self.view, @intFromEnum(hint));
+    const res = c.puglGetViewHint(self.view, @backingInt(hint));
     return if (res == c.PUGL_DONT_CARE) null else @abs(res);
 }
 
@@ -158,7 +158,7 @@ pub const BoolHint = enum(c_uint) {
 ///
 /// This only has an effect when called before `realize`.
 pub fn setBoolHint(self: *const View, hint: BoolHint, value: ?bool) pugl.Error!void {
-    try errFromStatus(c.puglSetViewHint(self.view, @intFromEnum(hint), if (value) |v| @intFromBool(v) else c.PUGL_DONT_CARE));
+    try errFromStatus(c.puglSetViewHint(self.view, @backingInt(hint), if (value) |v| @intFromBool(v) else c.PUGL_DONT_CARE));
 }
 
 /// Get the boolean value for a view hint.
@@ -169,7 +169,7 @@ pub fn setBoolHint(self: *const View, hint: BoolHint, value: ?bool) pugl.Error!v
 /// this can be used to get the actual value of a hint which was initially set to `null`,
 /// or has been adjusted from the suggested value.
 pub fn getBoolHint(self: *const View, hint: BoolHint) ?bool {
-    const res = c.puglGetViewHint(self.view, @intFromEnum(hint));
+    const res = c.puglGetViewHint(self.view, @backingInt(hint));
     return switch (res) {
         c.PUGL_DONT_CARE => null,
         0 => false,
@@ -189,7 +189,7 @@ pub const ContextApi = enum(c_int) {
 ///
 /// This only has an effect when called before `realize`.
 pub fn setContextApi(self: *const View, value: ?ContextApi) pugl.Error!void {
-    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_CONTEXT_API, if (value) |v| @intFromEnum(v) else c.PUGL_DONT_CARE));
+    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_CONTEXT_API, if (value) |v| @backingInt(v) else c.PUGL_DONT_CARE));
 }
 
 /// Get the OpenGL render API.
@@ -201,7 +201,7 @@ pub fn setContextApi(self: *const View, value: ?ContextApi) pugl.Error!void {
 /// or has been adjusted from the suggested value.
 pub fn getContextApi(self: *const View) ?ContextApi {
     const res = c.puglGetViewHint(self.view, c.PUGL_CONTEXT_API);
-    return if (res == -1) null else @enumFromInt(res);
+    return if (res == -1) null else @fromBackingInt(@intCast(res));
 }
 
 /// OpenGL context profile
@@ -216,7 +216,7 @@ pub const ContextProfile = enum(c_int) {
 ///
 /// This only has an effect when called before `View.realize()`.
 pub fn setContextProfile(self: *const View, value: ?ContextProfile) pugl.Error!void {
-    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_CONTEXT_PROFILE, if (value) |v| @intFromEnum(v) else c.PUGL_DONT_CARE));
+    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_CONTEXT_PROFILE, if (value) |v| @backingInt(v) else c.PUGL_DONT_CARE));
 }
 
 /// Get the OpenGL context profile.
@@ -228,7 +228,7 @@ pub fn setContextProfile(self: *const View, value: ?ContextProfile) pugl.Error!v
 /// or has been adjusted from the suggested value.
 pub fn getContextProfile(self: *const View) ?ContextProfile {
     const res = c.puglGetViewHint(self.view, c.PUGL_CONTEXT_PROFILE);
-    return if (res == c.PUGL_DONT_CARE) null else @enumFromInt(res);
+    return if (res == c.PUGL_DONT_CARE) null else @fromBackingInt(@intCast(res));
 }
 
 /// View type
@@ -247,7 +247,7 @@ pub const Type = enum(c_int) {
 ///
 /// This only has an effect when called before `realize`.
 pub fn setType(self: *const View, value: ?Type) pugl.Error!void {
-    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_VIEW_TYPE, if (value) |v| @intFromEnum(v) else c.PUGL_DONT_CARE));
+    try errFromStatus(c.puglSetViewHint(self.view, c.PUGL_VIEW_TYPE, if (value) |v| @backingInt(v) else c.PUGL_DONT_CARE));
 }
 
 /// Get the view type.
@@ -259,14 +259,14 @@ pub fn setType(self: *const View, value: ?Type) pugl.Error!void {
 /// or has been adjusted from the suggested value.
 pub fn getType(self: *const View) ?Type {
     const res = c.puglGetViewHint(self.view, c.PUGL_VIEW_TYPE);
-    return if (res == c.PUGL_DONT_CARE) null else @enumFromInt(res);
+    return if (res == c.PUGL_DONT_CARE) null else @fromBackingInt(@intCast(res));
 }
 
 /// Set a string property to configure view properties.
 ///
 /// The string value only needs to be valid for the duration of this call, it will be copied if necessary.
 pub fn setStringHint(self: *const View, hint: pugl.StringHint, value: [:0]const u8) pugl.Error!void {
-    try errFromStatus(c.puglSetViewString(self.view, @intFromEnum(hint), value));
+    try errFromStatus(c.puglSetViewString(self.view, @backingInt(hint), value));
 }
 
 /// Get a view string property.
@@ -274,7 +274,7 @@ pub fn setStringHint(self: *const View, hint: pugl.StringHint, value: [:0]const 
 /// The returned string should be accessed immediately, or copied.
 /// It may become invalid upon any call to any function that manipulates the same view.
 pub fn getStringHint(self: *const View, hint: pugl.StringHint) [:0]const u8 {
-    return std.mem.span(c.puglGetViewString(self.view, @intFromEnum(hint)));
+    return std.mem.span(c.puglGetViewString(self.view, @backingInt(hint)));
 }
 
 /// Return the scale factor of the view.
@@ -340,7 +340,7 @@ pub const PositionHint = enum(c_uint) {
 ///
 /// Always succeeds if the view is not yet realized.
 pub fn setPositionHint(self: *const View, hint: PositionHint, point: Point) pugl.Error!void {
-    try errFromStatus(c.puglSetPositionHint(self.view, @intFromEnum(hint), point.x, point.y));
+    try errFromStatus(c.puglSetPositionHint(self.view, @backingInt(hint), point.x, point.y));
 }
 
 /// Get a position hint for the view.
@@ -348,7 +348,7 @@ pub fn setPositionHint(self: *const View, hint: PositionHint, point: Point) pugl
 /// This can be used to get the default or current position of a view,
 /// in screen coordinates with an upper left origin.
 pub fn getPositionHint(self: *const View, hint: PositionHint) Point {
-    const res = c.puglGetPositionHint(self.view, @intFromEnum(hint));
+    const res = c.puglGetPositionHint(self.view, @backingInt(hint));
     return .{ .x = res.x, .y = res.y };
 }
 
@@ -403,7 +403,7 @@ pub const Area = struct { width: u32, height: u32 };
 ///
 /// Always succeeds if the view is not yet realized.
 pub fn setSizeHint(self: *const View, hint: SizeHint, size: Area) pugl.Error!void {
-    try errFromStatus(c.puglSetSizeHint(self.view, @intFromEnum(hint), size.width, size.height));
+    try errFromStatus(c.puglSetSizeHint(self.view, @backingInt(hint), size.width, size.height));
 }
 
 /// Get a size hint for the view.
@@ -411,7 +411,7 @@ pub fn setSizeHint(self: *const View, hint: SizeHint, size: Area) pugl.Error!voi
 /// This can be used to get the default, current, minimum, and maximum size of a view,
 /// as well as the supported range of aspect ratios.
 pub fn getSizeHint(self: *const View, hint: SizeHint) Area {
-    const res = c.puglGetSizeHint(self.view, @intFromEnum(hint));
+    const res = c.puglGetSizeHint(self.view, @backingInt(hint));
     return .{ .width = res.width, .height = res.height };
 }
 
@@ -499,7 +499,7 @@ pub const ShowCommand = enum(c_uint) {
 ///
 /// If the view is currently hidden, it will be shown and possibly raised to the top depending on the platform.
 pub fn show(self: *const View, command: ShowCommand) pugl.Error!void {
-    try errFromStatus(c.puglShow(self.view, @intFromEnum(command)));
+    try errFromStatus(c.puglShow(self.view, @backingInt(command)));
 }
 
 /// Hide the current window
@@ -666,7 +666,7 @@ pub const Clipboard = enum(c_uint) {
 ///
 /// Returns zero if the clipboard is empty.
 pub fn getNumClipboardTypes(self: *const View, clipboard: Clipboard) u32 {
-    return c.puglGetNumClipboardTypes(self.view, @intFromEnum(clipboard));
+    return c.puglGetNumClipboardTypes(self.view, @backingInt(clipboard));
 }
 
 /// Return the identifier of a type available in a clipboard.
@@ -675,7 +675,7 @@ pub fn getNumClipboardTypes(self: *const View, clipboard: Clipboard) u32 {
 /// Applications must ignore any type they do not recognize.
 /// Returns null if `type_index` is out of bounds according to `getNumClipboardTypes`.
 pub fn getClipboardType(self: *const View, clipboard: Clipboard, type_index: u32) [:0]const u8 {
-    return std.mem.span(c.puglGetClipboardType(self.view, @intFromEnum(clipboard), type_index));
+    return std.mem.span(c.puglGetClipboardType(self.view, @backingInt(clipboard), type_index));
 }
 
 // An action that can be performed on data from a clipboard.
@@ -718,7 +718,7 @@ pub fn acceptOffer(
         self.view,
         offer.cast(),
         type_index,
-        @intFromEnum(action),
+        @backingInt(action),
         region_point.x,
         region_point.y,
         region_area.width,
@@ -770,7 +770,7 @@ pub fn setClipboard(
 ) pugl.Error!void {
     try errFromStatus(c.puglSetClipboard(
         self.view,
-        @intFromEnum(clipboard_type),
+        @backingInt(clipboard_type),
         mime_type orelse null,
         data.ptr,
         data.len,
@@ -791,7 +791,7 @@ pub fn getClipboard(
     type_index: u32,
 ) ?[]const T {
     var len: usize = 0;
-    const ptr = c.puglGetClipboard(self.view, @intFromEnum(clipboard_type), type_index, &len);
+    const ptr = c.puglGetClipboard(self.view, @backingInt(clipboard_type), type_index, &len);
     if (ptr) |data| {
         const result: [*]const T = @ptrCast(data);
         return result[0..len];
@@ -838,7 +838,7 @@ test Cursor {
 /// Returns `BadParameter` if the given cursor is invalid, `Unsupported` if setting the cursor is not supported on this
 /// system, or another error if the cursor is known but loading it fails.
 pub fn setCursor(self: *const View, cursor: Cursor) pugl.Error!void {
-    try errFromStatus(c.puglSetCursor(self.view, @intFromEnum(cursor)));
+    try errFromStatus(c.puglSetCursor(self.view, @backingInt(cursor)));
 }
 
 /// Activate a repeating timer event.

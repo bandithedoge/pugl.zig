@@ -95,7 +95,7 @@ fn onEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
             };
             const cursor: u32 = @mod(row * @as(u32, n_cols) + col, @as(u32, @intCast(std.meta.fields(pugl.View.Cursor).len)));
 
-            try view.setCursor(@enumFromInt(cursor));
+            try view.setCursor(@fromBackingInt(@intCast(cursor)));
         },
         .expose => {
             gl.matrixMode(gl.MODELVIEW);
