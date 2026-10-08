@@ -142,14 +142,14 @@ pub const Any = struct {
 
     pub fn cast(self: *const Any) *const c.PuglAnyEvent {
         return &.{
-            .type = @intFromEnum(self.type),
+            .type = @backingInt(self.type),
             .flags = self.flags.cast(),
         };
     }
 
     pub fn from(event: c.PuglAnyEvent) Any {
         return .{
-            .type = @enumFromInt(event.type),
+            .type = @fromBackingInt(@intCast(event.type)),
             .flags = Flags.from(event.flags),
         };
     }
@@ -174,8 +174,8 @@ pub const Any = struct {
 /// since they are manipulated to provide a consistent portable API.
 pub const Button = struct {
     type: enum(c_uint) {
-        press = @intFromEnum(Type.button_press),
-        release = @intFromEnum(Type.button_release),
+        press = @backingInt(Type.button_press),
+        release = @backingInt(Type.button_release),
     },
     flags: Flags,
     /// Time in seconds
@@ -195,7 +195,7 @@ pub const Button = struct {
 
     pub fn cast(self: *const Button) *const c.PuglButtonEvent {
         return &.{
-            .type = @intFromEnum(self.type),
+            .type = @backingInt(self.type),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -209,7 +209,7 @@ pub const Button = struct {
 
     pub fn from(event: c.PuglButtonEvent) Button {
         return .{
-            .type = @enumFromInt(event.type),
+            .type = @fromBackingInt(@intCast(event.type)),
             .flags = Flags.from(event.flags),
             .time = event.time,
             .x = event.x,
@@ -242,7 +242,7 @@ pub const Configure = struct {
 
     pub fn cast(self: *const Configure) *const c.PuglConfigureEvent {
         return &.{
-            .type = @intFromEnum(Type.configure),
+            .type = @backingInt(Type.configure),
             .flags = self.flags.cast(),
             .x = self.x,
             .y = self.y,
@@ -282,7 +282,7 @@ pub const Expose = struct {
 
     pub fn cast(self: *const Expose) *const c.PuglExposeEvent {
         return &.{
-            .type = @intFromEnum(Type.expose),
+            .type = @backingInt(Type.expose),
             .flags = self.flags.cast(),
             .x = self.x,
             .y = self.y,
@@ -317,8 +317,8 @@ pub const Expose = struct {
 /// but note that this value is not portable and differs between platforms and hardware.
 pub const Key = struct {
     type: enum(c_uint) {
-        press = @intFromEnum(Type.key_press),
-        release = @intFromEnum(Type.key_release),
+        press = @backingInt(Type.key_press),
+        release = @backingInt(Type.key_release),
     },
     flags: Flags,
     /// Time in seconds
@@ -340,7 +340,7 @@ pub const Key = struct {
 
     pub fn cast(self: *const Key) *const c.PuglKeyEvent {
         return &.{
-            .type = @intFromEnum(self.type),
+            .type = @backingInt(self.type),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -355,7 +355,7 @@ pub const Key = struct {
 
     pub fn from(event: c.PuglKeyEvent) Key {
         return .{
-            .type = @enumFromInt(event.type),
+            .type = @fromBackingInt(@intCast(event.type)),
             .flags = Flags.from(event.flags),
             .time = event.time,
             .x = event.x,
@@ -400,7 +400,7 @@ pub const Text = struct {
 
     pub fn cast(self: *const Text) *const c.PuglTextEvent {
         return &.{
-            .type = @intFromEnum(Type.text),
+            .type = @backingInt(Type.text),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -447,8 +447,8 @@ pub const CrossingMode = enum(c_uint) {
 /// as described by the `CrossingMode` enum.
 pub const Crossing = struct {
     type: enum(c_uint) {
-        in = @intFromEnum(Type.pointer_in),
-        out = @intFromEnum(Type.pointer_out),
+        in = @backingInt(Type.pointer_in),
+        out = @backingInt(Type.pointer_out),
     },
     flags: Flags,
     /// Time in seconds
@@ -468,7 +468,7 @@ pub const Crossing = struct {
 
     pub fn cast(self: *const Crossing) *const c.PuglCrossingEvent {
         return &.{
-            .type = @intFromEnum(self.type),
+            .type = @backingInt(self.type),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -476,13 +476,13 @@ pub const Crossing = struct {
             .xRoot = self.x_root,
             .yRoot = self.y_root,
             .state = self.state.cast(),
-            .mode = @intFromEnum(self.mode),
+            .mode = @backingInt(self.mode),
         };
     }
 
     pub fn from(event: c.PuglCrossingEvent) Crossing {
         return .{
-            .type = @enumFromInt(event.type),
+            .type = @fromBackingInt(@intCast(event.type)),
             .flags = Flags.from(event.flags),
             .time = event.time,
             .x = event.x,
@@ -490,7 +490,7 @@ pub const Crossing = struct {
             .x_root = event.xRoot,
             .y_root = event.yRoot,
             .state = Mods.from(event.state),
-            .mode = @enumFromInt(event.mode),
+            .mode = @fromBackingInt(@intCast(event.mode)),
         };
     }
 };
@@ -513,7 +513,7 @@ pub const Motion = struct {
 
     pub fn cast(self: *const Motion) *const c.PuglMotionEvent {
         return &.{
-            .type = @intFromEnum(Type.motion),
+            .type = @backingInt(Type.motion),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -580,7 +580,7 @@ pub const Scroll = struct {
 
     pub fn cast(self: *const Scroll) *const c.PuglScrollEvent {
         return &.{
-            .type = @intFromEnum(Type.scroll),
+            .type = @backingInt(Type.scroll),
             .flags = self.flags.cast(),
             .time = self.time,
             .x = self.x,
@@ -588,7 +588,7 @@ pub const Scroll = struct {
             .xRoot = self.x_root,
             .yRoot = self.y_root,
             .state = self.state.cast(),
-            .direction = @intFromEnum(self.direction),
+            .direction = @backingInt(self.direction),
             .dx = self.dx,
             .dy = self.dy,
         };
@@ -603,7 +603,7 @@ pub const Scroll = struct {
             .x_root = event.xRoot,
             .y_root = event.yRoot,
             .state = Mods.from(event.state),
-            .direction = @enumFromInt(event.direction),
+            .direction = @fromBackingInt(@intCast(event.direction)),
             .dx = event.dx,
             .dy = event.dy,
         };
@@ -616,8 +616,8 @@ pub const Scroll = struct {
 /// The view with the keyboard focus will receive any key press or release events.
 pub const Focus = struct {
     type: enum(c_uint) {
-        in = @intFromEnum(Type.focus_in),
-        out = @intFromEnum(Type.focus_out),
+        in = @backingInt(Type.focus_in),
+        out = @backingInt(Type.focus_out),
     },
     flags: Flags,
     /// Reason for focus change
@@ -625,17 +625,17 @@ pub const Focus = struct {
 
     pub fn cast(self: *const Focus) *const c.PuglFocusEvent {
         return &.{
-            .type = @intFromEnum(self.type),
+            .type = @backingInt(self.type),
             .flags = self.flags.cast(),
-            .mode = @intFromEnum(self.mode),
+            .mode = @backingInt(self.mode),
         };
     }
 
     pub fn from(event: c.PuglFocusEvent) Focus {
         return .{
-            .type = @enumFromInt(event.type),
+            .type = @fromBackingInt(@intCast(event.type)),
             .flags = Flags.from(event.flags),
-            .mode = @enumFromInt(event.mode),
+            .mode = @fromBackingInt(@intCast(event.mode)),
         };
     }
 };
@@ -654,7 +654,7 @@ pub const Client = struct {
 
     pub fn cast(self: *const Client) *const c.PuglClientEvent {
         return &.{
-            .type = @intFromEnum(Type.client),
+            .type = @backingInt(Type.client),
             .flags = self.flags.cast(),
             .data1 = @intFromPtr(self.data1),
             .data2 = @intFromPtr(self.data2),
@@ -683,7 +683,7 @@ pub const Timer = struct {
 
     pub fn cast(self: *const Timer) *const c.PuglTimerEvent {
         return &.{
-            .type = @intFromEnum(Type.timer),
+            .type = @backingInt(Type.timer),
             .flags = self.flags.cast(),
             .id = self.id,
         };
@@ -709,7 +709,7 @@ pub const DataOffer = struct {
 
     pub fn cast(self: *const DataOffer) *const c.PuglDataOfferEvent {
         return &.{
-            .type = @intFromEnum(Type.data_offer),
+            .type = @backingInt(Type.data_offer),
             .flags = self.flags.cast(),
             .time = self.time,
         };
@@ -736,7 +736,7 @@ pub const Data = struct {
 
     pub fn cast(self: *const Data) *const c.PuglDataEvent {
         return &.{
-            .type = @intFromEnum(Type.data),
+            .type = @backingInt(Type.data),
             .flags = self.flags.cast(),
             .time = self.time,
             .typeIndex = self.type_index,
@@ -790,7 +790,7 @@ pub const Event = union(Type) {
     }
 
     pub fn from(event: *const c.PuglEvent) Event {
-        return switch (@as(Type, @enumFromInt(event.type))) {
+        return switch (@as(Type, @fromBackingInt(@intCast(event.type)))) {
             .nothing => .{ .nothing = Any.from(event.any) },
             .realize => .{ .realize = Any.from(event.any) },
             .unrealize => .{ .unrealize = Any.from(event.any) },

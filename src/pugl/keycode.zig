@@ -88,7 +88,7 @@ pub const Keycode = enum(c_uint) {
     keypad_divide = c.PUGL_KEY_PAD_DIVIDE,
 
     pub fn int(self: Keycode) u32 {
-        return @intFromEnum(self);
+        return @backingInt(self);
     }
 };
 

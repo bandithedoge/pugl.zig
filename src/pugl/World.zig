@@ -38,7 +38,7 @@ test Flags {
 
 /// Create a new world. Must later be freed with `deinit`
 pub fn init(world_type: Type, flags: Flags) error{OutOfMemory}!World {
-    return .{ .world = c.puglNewWorld(@intFromEnum(world_type), flags.cast()) orelse return error.OutOfMemory };
+    return .{ .world = c.puglNewWorld(@backingInt(world_type), flags.cast()) orelse return error.OutOfMemory };
 }
 
 /// Free a world allocated with `init`
@@ -74,7 +74,7 @@ pub fn getNativeWorld(self: *const World) *anyopaque {
 ///
 /// The string value only needs to be valid for the duration of this call, it will be copied if necessary.
 pub fn setHint(self: *const World, hint: pugl.StringHint, value: [:0]const u8) pugl.Error!void {
-    try errFromStatus(c.puglSetWorldString(self.world, @intFromEnum(hint), value));
+    try errFromStatus(c.puglSetWorldString(self.world, @backingInt(hint), value));
 }
 
 /// Get a world or application string property.
@@ -82,7 +82,7 @@ pub fn setHint(self: *const World, hint: pugl.StringHint, value: [:0]const u8) p
 /// The returned string should be accessed immediately, or copied.
 /// It may become invalid upon any call to any function that manipulates the same view.
 pub fn getHint(self: *const World, hint: pugl.StringHint) [:0]const u8 {
-    return std.mem.span(c.puglGetWorldString(self.world, @intFromEnum(hint)));
+    return std.mem.span(c.puglGetWorldString(self.world, @backingInt(hint)));
 }
 
 /// Return the time in seconds.
