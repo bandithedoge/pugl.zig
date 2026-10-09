@@ -221,18 +221,21 @@ pub fn build(b: *std.Build) !void {
     }
 
     if (options.backend_cairo) {
-        if (b.lazyDependency("cairo", .{})) |cairo| {
-            const headers = b.addNamedWriteFiles("headers");
-            _ = headers.addCopyDirectory(
-                cairo.path("src"),
-                "",
-                .{ .include_extensions = &.{"h"} },
-            );
+        if (b.lazyDependency("cairo", .{
+            .target = target,
+            .optimize = optimize,
+            .use_zlib = false,
+            .use_xcb = false,
+            .symbol_lookup = false,
+            .use_glib = false,
+        })) |cairo| {
+            if (b.systemIntegrationOption("cairo", .{}))
+                pugl.linkSystemLibrary("cairo", .{})
+            else
+                pugl.linkLibrary(cairo.artifact("cairo"));
 
-            b.addNamedLazyPath("cairo_headers", headers.getDirectory());
+            b.addNamedLazyPath("cairo_headers", cairo.namedWriteFiles("headers").getDirectory());
         }
-
-        pugl.linkSystemLibrary("cairo", .{});
 
         pugl.addCSourceFile(.{
             .file = pugl_dep.path(b.fmt("src/{s}_cairo.{s}", .{ @tagName(platform), c_src_ext })),
