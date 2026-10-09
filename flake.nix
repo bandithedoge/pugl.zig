@@ -28,13 +28,13 @@
           ...
         }:
         let
-          zig' = inputs.zig.packages.${system}."0_16_0";
+          zig' = inputs.zig.packages.${system}."0_17_0";
         in
         {
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               zig'
-              zig'.zls
+              # zig'.zls
               python3
               pkg-config
             ];
