@@ -5,8 +5,8 @@
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
-            .url = "git+https://github.com/nat3Github/c-lib-pugl-dev#266bea48d65608af48ad7f32d4306c1548be06c3",
-            .hash = "pugl-0.4.0-sVTl0TNnBQBSjAyctAh5h6b6dAWgH36eN9OOywpCF8BT",
+            .url = "git+https://github.com/nat3Github/c-lib-pugl-dev#f56d9dfc2ed6d277eeb714f51ecdb11796c1f42c",
+            .hash = "pugl-0.4.0-sVTl0adrBgD13CF4_kF7C76vU-qNdDh55QNgpcju8bgV",
         },
         .cairo = .{
             .url = "git+https://github.com/bandithedoge/cairo.zig.git#00e62a596fcbdd298d0f54fb98a5237ee32a4e9d",
