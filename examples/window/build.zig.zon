@@ -8,8 +8,8 @@
             .path = "../..",
         },
         .opengl = .{
-            .url = "git+https://github.com/ypsvlq/opengl.git#34adadee89dd2107f7594b164f020e83aafb234c",
-            .hash = "opengl-0.0.0-_Vp8-OnvKgBvhDxpOiCHe118Bf9B0i4VTbsJhMzYYOgk",
+            .url = "git+https://github.com/ypsvlq/opengl.git#659d2da5fcb911981d410f34d0d4236a39685065",
+            .hash = "opengl-0.0.0-_Vp8-BvwKgAaj2cWMaOMKT8VFoLx0AP9kX519_4WUaV7",
         },
     },
 
