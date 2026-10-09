@@ -93,7 +93,7 @@ fn onEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
                 const c: u32 = @intFromFloat(e.x * n_cols / @as(f32, @floatFromInt(size.width)));
                 break :blk if (c < 0) 0 else if (c >= n_cols) @as(u32, @intFromFloat(n_cols)) - 1 else c;
             };
-            const cursor: u32 = @mod(row * @as(u32, n_cols) + col, @as(u32, @intCast(std.meta.fields(pugl.View.Cursor).len)));
+            const cursor: u32 = @mod(row * @as(u32, n_cols) + col, @as(u32, @intCast(@typeInfo(pugl.View.Cursor).@"enum".field_names.len)));
 
             try view.setCursor(@fromBackingInt(@intCast(cursor)));
         },
