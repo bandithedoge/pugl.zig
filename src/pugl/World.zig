@@ -96,7 +96,9 @@ pub fn getTime(self: *const World) f64 {
 
 /// Update by processing events from the window system.
 ///
-/// This function is a single iteration of the main loop, and should be called repeatedly to update all views.
+/// This function is a single iteration of the main loop, and should be called repeatedly to update all views. This call
+/// will potentially block based on the `timeout` parameter, then process all pending events from the windowing system,
+/// dispatching events to views as necessary.
 ///
 /// If `timeout` is zero, then this function will not block.
 /// Plugins should always use a timeout of zero to avoid blocking the host.
