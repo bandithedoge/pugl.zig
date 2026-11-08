@@ -706,12 +706,21 @@ pub const DataOffer = struct {
     flags: Flags,
     /// Time in seconds
     time: f64,
+    /// View-relative X coordinate
+    x: f64,
+    /// View-relative Y coordinate
+    y: f64,
+    /// Clipboard with available data
+    clipboard: View.Clipboard,
 
     pub fn cast(self: *const DataOffer) *const c.PuglDataOfferEvent {
         return &.{
             .type = @backingInt(Type.data_offer),
             .flags = self.flags.cast(),
             .time = self.time,
+            .x = self.x,
+            .y = self.y,
+            .clipboard = @backingInt(self.clipboard),
         };
     }
 
@@ -719,6 +728,9 @@ pub const DataOffer = struct {
         return .{
             .flags = Flags.from(event.flags),
             .time = event.time,
+            .x = event.x,
+            .y = event.y,
+            .clipboard = @fromBackingInt(@intCast(event.clipboard)),
         };
     }
 };
@@ -733,6 +745,12 @@ pub const Data = struct {
     time: f64,
     /// Index of datatype
     type_index: u32,
+    /// View-relative X coordinate
+    x: f64,
+    /// View-relative Y coordinate
+    y: f64,
+    /// Clipboard with available data
+    clipboard: View.Clipboard,
 
     pub fn cast(self: *const Data) *const c.PuglDataEvent {
         return &.{
@@ -740,6 +758,9 @@ pub const Data = struct {
             .flags = self.flags.cast(),
             .time = self.time,
             .typeIndex = self.type_index,
+            .x = self.x,
+            .y = self.y,
+            .clipboard = @backingInt(self.clipboard),
         };
     }
 
@@ -748,6 +769,9 @@ pub const Data = struct {
             .flags = Flags.from(event.flags),
             .time = event.time,
             .type_index = event.typeIndex,
+            .x = event.x,
+            .y = event.y,
+            .clipboard = @fromBackingInt(@intCast(event.clipboard)),
         };
     }
 };

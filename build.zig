@@ -1,6 +1,8 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
+const Translator = @import("translate_c").Translator;
+
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
@@ -44,13 +46,17 @@ pub fn build(b: *std.Build) !void {
 
     const pugl_dep = b.dependency("pugl", .{});
 
-    const pugl_c = b.addTranslateC(.{
+    const translate_c = b.dependency("translate_c", .{
         .target = target,
         .optimize = optimize,
-        .root_source_file = pugl_dep.path("include/pugl/pugl.h"),
+    });
+
+    const pugl_c = Translator.init(translate_c, .{
+        .target = target,
+        .optimize = optimize,
+        .c_source_file = pugl_dep.path("include/pugl/pugl.h"),
     });
     pugl_c.addIncludePath(pugl_dep.path("include"));
-    const pugl_c_module = pugl_c.addModule("c");
 
     const pugl = b.addModule("pugl", .{
         .target = target,
@@ -59,7 +65,7 @@ pub fn build(b: *std.Build) !void {
         .link_libc = true,
         .imports = &.{
             .{ .name = "pugl_options", .module = options_step.createModule() },
-            .{ .name = "c", .module = pugl_c_module },
+            .{ .name = "c", .module = pugl_c.mod },
         },
     });
 
@@ -159,7 +165,7 @@ pub fn build(b: *std.Build) !void {
 
     const backend_imports: []const std.Build.Module.Import = &.{
         .{ .name = "pugl", .module = pugl },
-        .{ .name = "c", .module = pugl_c_module },
+        .{ .name = "c", .module = pugl_c.mod },
     };
 
     if (options.backend_opengl) {
@@ -172,10 +178,10 @@ pub fn build(b: *std.Build) !void {
 
         pugl.addCSourceFile(.{ .file = pugl_dep.path(b.fmt("src/{s}_gl.{s}", .{ @tagName(platform), c_src_ext })) });
 
-        const opengl_c = b.addTranslateC(.{
+        const opengl_c = Translator.init(translate_c, .{
             .target = target,
             .optimize = optimize,
-            .root_source_file = pugl_dep.path("include/pugl/gl.h"),
+            .c_source_file = pugl_dep.path("include/pugl/gl.h"),
         });
         opengl_c.addIncludePath(pugl_dep.path("include"));
         opengl_c.defineCMacro("PUGL_NO_INCLUDE_GL_H", "1");
@@ -184,7 +190,7 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/opengl.zig"),
             .imports = backend_imports,
         });
-        opengl_module.addImport("opengl_c", opengl_c.createModule());
+        opengl_module.addImport("opengl_c", opengl_c.mod);
 
         try tests.appendSlice(b.allocator, &.{
             "gl",
@@ -206,10 +212,10 @@ pub fn build(b: *std.Build) !void {
             pugl.linkFramework("QuartzCore", .{});
         }
 
-        const vulkan_c = b.addTranslateC(.{
+        const vulkan_c = Translator.init(translate_c, .{
             .target = target,
             .optimize = optimize,
-            .root_source_file = pugl_dep.path("include/pugl/vulkan.h"),
+            .c_source_file = pugl_dep.path("include/pugl/vulkan.h"),
         });
         vulkan_c.addIncludePath(pugl_dep.path("include"));
 
@@ -217,7 +223,7 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/vulkan.zig"),
             .imports = backend_imports,
         });
-        vulkan_module.addImport("vulkan_c", vulkan_c.createModule());
+        vulkan_module.addImport("vulkan_c", vulkan_c.mod);
 
         try tests.append(b.allocator, "vulkan");
     }
@@ -244,10 +250,10 @@ pub fn build(b: *std.Build) !void {
             .flags = c_flags.items,
         });
 
-        const cairo_c = b.addTranslateC(.{
+        const cairo_c = Translator.init(translate_c, .{
             .target = target,
             .optimize = optimize,
-            .root_source_file = pugl_dep.path("include/pugl/cairo.h"),
+            .c_source_file = pugl_dep.path("include/pugl/cairo.h"),
         });
         cairo_c.addIncludePath(pugl_dep.path("include"));
 
@@ -255,7 +261,7 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path("src/backend/cairo.zig"),
             .imports = backend_imports,
         });
-        cairo_module.addImport("cairo_c", cairo_c.createModule());
+        cairo_module.addImport("cairo_c", cairo_c.mod);
         cairo_module.linkLibrary(lib);
 
         try tests.append(b.allocator, "cairo");
