@@ -2,58 +2,32 @@ const std = @import("std");
 const c = @import("c");
 const View = @import("View.zig");
 
-pub const Type = enum(c_uint) {
-    /// No event
+const Type = enum(c_uint) {
     nothing = c.PUGL_NOTHING,
-    /// View realized
     realize = c.PUGL_REALIZE,
-    /// View unrealizeed
     unrealize = c.PUGL_UNREALIZE,
-    /// View configured
     configure = c.PUGL_CONFIGURE,
-    /// View ready to draw
     update = c.PUGL_UPDATE,
-    /// View blank event
     blank = c.PUGL_BLANK,
-    /// View must be drawn
     expose = c.PUGL_EXPOSE,
-    /// View flush event
     flush = c.PUGL_FLUSH,
-    /// View will be closed
     close = c.PUGL_CLOSE,
-    /// Keyboard focus entered view
     focus_in = c.PUGL_FOCUS_IN,
-    /// Keyboard focus left view
     focus_out = c.PUGL_FOCUS_OUT,
-    /// Key pressed
     key_press = c.PUGL_KEY_PRESS,
-    /// Key released
     key_release = c.PUGL_KEY_RELEASE,
-    /// Character entered
     text = c.PUGL_TEXT,
-    /// Pointer entered view
     pointer_in = c.PUGL_POINTER_IN,
-    /// Pointer left view
     pointer_out = c.PUGL_POINTER_OUT,
-    /// Mouse button pressed
     button_press = c.PUGL_BUTTON_PRESS,
-    /// Mouse button released
     button_release = c.PUGL_BUTTON_RELEASE,
-    /// Pointer moved
     motion = c.PUGL_MOTION,
-    /// Scrolled
     scroll = c.PUGL_SCROLL,
-    /// Custom client message
     client = c.PUGL_CLIENT,
-    /// Timer triggered
     timer = c.PUGL_TIMER,
-    /// Recursive loop entered
     loop_enter = c.PUGL_LOOP_ENTER,
-    /// Recursive loop left
     loop_leave = c.PUGL_LOOP_LEAVE,
-    /// Data offered from clipboard
     data_offer = c.PUGL_DATA_OFFER,
-    /// Data available from clipboard
     data = c.PUGL_DATA,
 };
 
@@ -780,37 +754,87 @@ pub const Data = struct {
     }
 };
 
-/// View event.
+/// View event. See the individual event type structs for more detailed documentation.
 ///
 /// The graphics system may only be accessed when handling certain events.
 /// The graphics context is active for `realize`, `unrealize`, `configure`, and `expose`,
 /// but only enabled for drawing for `expose`.
 pub const Event = union(Type) {
+    /// No event
     nothing: Any,
+    /// View realized
     realize: Any,
+    /// View unrealizeed
     unrealize: Any,
+    /// View configured
     configure: Configure,
+    /// View ready to draw.
+    ///
+    /// This is sent near the end of a main loop iteration when the view is potentially about to be redrawn.
+    /// It can be used to mark regions for exposure with `View.obscure` or `View.obscureRegion`.
+    /// For example, to continuously animate, obscure the view whenever an update event is received,
+    /// then receive and handle the expose event(s) shortly afterwards.
     update: Any,
+    /// View blank event.
+    ///
+    /// This event is sent to a view when it is about to be exposed, after the graphics context is entered.
     blank: Any,
+    /// View must be drawn.
+    ///
+    /// This is sent when a region needs to be redrawn, with the graphics context entered and activated for drawing.
+    /// The application must completely draw the given region.
     expose: Expose,
+    /// View flush event.
+    ///
+    /// This event is sent to a view after it has been exposed and the graphics context is exited.
     flush: Any,
+    /// View will be closed.
+    ///
+    /// This is sent when the view is to be closed, for example when the user clicks the close button.
     close: Any,
+    /// Keyboard focus entered view
     focus_in: Focus,
+    /// Keyboard focus left view
     focus_out: Focus,
+    /// Key pressed
     key_press: Key,
+    /// Key released
     key_release: Key,
+    /// Character entered
     text: Text,
+    /// Pointer entered view
     pointer_in: Crossing,
+    /// Pointer left view
     pointer_out: Crossing,
+    /// Mouse button pressed
     button_press: Button,
+    /// Mouse button released
     button_release: Button,
+    /// Pointer moved
     motion: Motion,
+    /// Scrolled
     scroll: Scroll,
+    /// Custom client message
     client: Client,
+    /// Timer triggered
     timer: Timer,
+    /// Recursive loop entered
+    ///
+    /// This is sent when the window system enters a recursive loop.
+    /// While in the recursive loop, the main loop will be stalled and no expose events will be received.
+    /// A typical use is to install a timer to perform continuous actions, such as drawing.
+    ///
+    /// - MacOS: A recursive loop is entered while the window is being live resized.
+    /// - Windows: A recursive loop is entered while the window is being live resized or the menu is shown.
+    /// - X11: A recursive loop is never entered and the event loop runs as usual while the view is being resized.
     loop_enter: Any,
+    /// Recursive loop left
+    ///
+    /// This is sent after a loop enter event when the recursive loop is finished and normal iteration will continue.
     loop_leave: Any,
+    /// Data offered from clipboard
     data_offer: DataOffer,
+    /// Data available from clipboard
     data: Data,
 
     pub fn cast(self: *const Event) *const c.PuglEvent {
