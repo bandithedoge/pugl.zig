@@ -150,6 +150,8 @@ pub const BoolHint = enum(c_uint) {
     dark_frame = c.PUGL_DARK_FRAME,
     /// True if view accepts dropped data
     accept_drop = c.PUGL_ACCEPT_DROP,
+    /// True if view should be continuously rendered
+    continuous = c.PUGL_CONTINUOUS,
 };
 
 /// Set a boolean hint to configure view properties.

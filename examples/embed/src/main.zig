@@ -55,6 +55,7 @@ pub fn main(init: std.process.Init) !void {
 
     try app.parent.setBoolHint(.context_debug, app.options.error_checking);
     try app.parent.setBoolHint(.resizable, app.options.resizable);
+    try app.parent.setBoolHint(.continuous, app.options.continuous);
     if (app.options.anti_aliasing)
         try app.parent.setIntHint(.samples, 4);
     try app.parent.setBoolHint(.double_buffer, app.options.double_buffer);
@@ -82,6 +83,7 @@ pub fn main(init: std.process.Init) !void {
     });
 
     try app.child.setBoolHint(.context_debug, app.options.error_checking);
+    try app.child.setBoolHint(.continuous, app.options.continuous);
     if (app.options.anti_aliasing)
         try app.child.setIntHint(.samples, 4);
     try app.child.setBoolHint(.double_buffer, app.options.double_buffer);
@@ -123,7 +125,6 @@ fn onParentEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!voi
                 .height = e.height - (2 * border.y),
             });
         },
-        .update => if (app.options.continuous) try view.obscure(),
         .expose => {
             if (view.hasFocus()) {
                 gl.matrixMode(gl.MODELVIEW);
@@ -152,7 +153,6 @@ fn onParentEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!voi
 fn onChildEvent(view: *const pugl.View, event: pugl.event.Event) pugl.Error!void {
     const app = App.cast(view.getHandle().?);
     switch (event) {
-        .update => if (app.options.continuous) try view.obscure(),
         .expose => {
             const world = view.getWorld();
             const this_time = world.getTime();
