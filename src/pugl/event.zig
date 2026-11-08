@@ -13,8 +13,12 @@ pub const Type = enum(c_uint) {
     configure = c.PUGL_CONFIGURE,
     /// View ready to draw
     update = c.PUGL_UPDATE,
+    /// View blank event
+    blank = c.PUGL_BLANK,
     /// View must be drawn
     expose = c.PUGL_EXPOSE,
+    /// View flush event
+    flush = c.PUGL_FLUSH,
     /// View will be closed
     close = c.PUGL_CLOSE,
     /// Keyboard focus entered view
@@ -787,7 +791,9 @@ pub const Event = union(Type) {
     unrealize: Any,
     configure: Configure,
     update: Any,
+    blank: Any,
     expose: Expose,
+    flush: Any,
     close: Any,
     focus_in: Focus,
     focus_out: Focus,
@@ -820,7 +826,9 @@ pub const Event = union(Type) {
             .unrealize => .{ .unrealize = Any.from(event.any) },
             .configure => .{ .configure = Configure.from(event.configure) },
             .update => .{ .update = Any.from(event.any) },
+            .blank => .{ .blank = Any.from(event.any) },
             .expose => .{ .expose = Expose.from(event.expose) },
+            .flush => .{ .flush = Any.from(event.any) },
             .close => .{ .close = Any.from(event.any) },
             .focus_in => .{ .focus_in = Focus.from(event.focus) },
             .focus_out => .{ .focus_out = Focus.from(event.focus) },
