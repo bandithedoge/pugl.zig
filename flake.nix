@@ -50,6 +50,8 @@
               libxrender
               freetype
             ];
+
+            dontUseZigConfigure = true;
           };
         };
     };
