@@ -46,10 +46,7 @@ pub fn build(b: *std.Build) !void {
 
     const pugl_dep = b.dependency("pugl", .{});
 
-    const translate_c = b.dependency("translate_c", .{
-        .target = target,
-        .optimize = optimize,
-    });
+    const translate_c = b.dependency("translate_c", .{});
 
     const pugl_c = Translator.init(translate_c, .{
         .target = target,
