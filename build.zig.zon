@@ -5,7 +5,7 @@
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
-            .url = "git+https://github.com/nat3Github/c-lib-pugl-dev#d151c2db03749bb2a894ab8d6429c58f1949cc9a",
+            .url = "git+https://github.com/nat3Github/c-lib-pugl-lean#4f284e289e2e4ca474a8361bf7fbff36c191d4dd",
             .hash = "pugl-0.4.0-sVTl0TlxBgBQOCUhWHmPVazuiwXhvdmhIyeqAErteuIi",
         },
         .translate_c = .{
