@@ -5,8 +5,8 @@
     .fingerprint = 0x76f905284eed4b09,
     .dependencies = .{
         .pugl = .{
-            .url = "git+https://github.com/nat3Github/c-lib-pugl-lean#4f284e289e2e4ca474a8361bf7fbff36c191d4dd",
-            .hash = "pugl-0.4.0-sVTl0TlxBgBQOCUhWHmPVazuiwXhvdmhIyeqAErteuIi",
+            .url = "git+https://github.com/nat3Github/c-lib-pugl-lean#2b94eebc7b968764ccb3db9bfc98ca494c66f54f",
+            .hash = "pugl-0.7.1-sVTl0dXpBgCQ4bM57XAVe6y1sY-1Yt_kk54f5EnfaIq4",
         },
         .translate_c = .{
             .url = "git+https://codeberg.org/ziglang/translate-c.git?ref=zig-0.17.x#cfac21f3199b2b02ce3fd7db652aa456421fe4ab",

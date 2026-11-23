@@ -40,6 +40,8 @@ pub const Error = error{
     Unsupported,
     /// Failed to allocate memory
     OutOfMemory,
+    /// Failed to connect to display
+    ConnectFailed,
 };
 
 /// A string property for configuration
