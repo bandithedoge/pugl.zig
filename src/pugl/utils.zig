@@ -20,6 +20,7 @@ pub inline fn errFromStatus(status: c.PuglStatus) pugl.Error!void {
         c.PUGL_CREATE_CONTEXT_FAILED => pugl.Error.CreateContextFailed,
         c.PUGL_UNSUPPORTED => pugl.Error.Unsupported,
         c.PUGL_NO_MEMORY => pugl.Error.OutOfMemory,
+        c.PUGL_CONNECT_FAILED => pugl.Error.ConnectFailed,
         else => unreachable,
     };
 }
@@ -39,6 +40,7 @@ pub inline fn statusFromErr(err: pugl.Error) c.PuglStatus {
         pugl.Error.CreateContextFailed => c.PUGL_CREATE_CONTEXT_FAILED,
         pugl.Error.Unsupported => c.PUGL_UNSUPPORTED,
         pugl.Error.OutOfMemory => c.PUGL_NO_MEMORY,
+        pugl.Error.ConnectFailed => c.PUGL_CONNECT_FAILED,
     };
 }
 

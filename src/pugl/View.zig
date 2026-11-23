@@ -535,7 +535,9 @@ pub const ViewStyle = packed struct {
     resizing: bool = false,
     /// View is ready for input or otherwise demanding attention
     demanding: bool = false,
-    _: u22 = 0,
+    /// View is the active window
+    active: bool = false,
+    _: u21 = 0,
 
     pub fn cast(self: ViewStyle) u32 {
         return @bitCast(self);
@@ -552,7 +554,7 @@ test ViewStyle {
     try std.testing.expectEqual(
         @as(u32, c.PUGL_VIEW_STYLE_MAPPED | c.PUGL_VIEW_STYLE_MODAL | c.PUGL_VIEW_STYLE_ABOVE | c.PUGL_VIEW_STYLE_BELOW |
             c.PUGL_VIEW_STYLE_HIDDEN | c.PUGL_VIEW_STYLE_TALL | c.PUGL_VIEW_STYLE_WIDE | c.PUGL_VIEW_STYLE_FULLSCREEN |
-            c.PUGL_VIEW_STYLE_RESIZING | c.PUGL_VIEW_STYLE_DEMANDING),
+            c.PUGL_VIEW_STYLE_RESIZING | c.PUGL_VIEW_STYLE_DEMANDING | c.PUGL_VIEW_STYLE_ACTIVE),
         (ViewStyle{
             .mapped = true,
             .modal = true,
@@ -564,9 +566,10 @@ test ViewStyle {
             .fullscreen = true,
             .resizing = true,
             .demanding = true,
+            .active = true,
         }).cast(),
     );
-    try std.testing.expectEqual(@as(u32, c.PUGL_MAX_VIEW_STYLE_FLAG), (ViewStyle{ .demanding = true }).cast());
+    try std.testing.expectEqual(@as(u32, c.PUGL_MAX_VIEW_STYLE_FLAG), (ViewStyle{ .active = true }).cast());
 }
 
 /// Set a view state, if supported by the system.

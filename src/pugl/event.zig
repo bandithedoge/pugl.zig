@@ -9,6 +9,7 @@ const Type = enum(c_uint) {
     configure = c.PUGL_CONFIGURE,
     update = c.PUGL_UPDATE,
     blank = c.PUGL_BLANK,
+    damage = c.PUGL_DAMAGE,
     expose = c.PUGL_EXPOSE,
     flush = c.PUGL_FLUSH,
     close = c.PUGL_CLOSE,
@@ -217,6 +218,8 @@ pub const Configure = struct {
     height: u16,
     /// View style flags
     style: View.ViewStyle,
+    /// Scale factor
+    scale: f64,
 
     pub fn cast(self: *const Configure) *const c.PuglConfigureEvent {
         return &.{
@@ -227,6 +230,7 @@ pub const Configure = struct {
             .width = self.width,
             .height = self.height,
             .style = self.style.cast(),
+            .scale = self.scale,
         };
     }
 
@@ -238,47 +242,60 @@ pub const Configure = struct {
             .width = event.width,
             .height = event.height,
             .style = View.ViewStyle.from(event.style),
+            .scale = event.scale,
         };
     }
 };
 
-/// Expose event for when a region must be redrawn.
+/// View damage event.
 ///
-/// When an expose event is received, the graphics context is active,
-/// and the view must draw the entire specified region.
-/// The contents of the region are undefined, there is no preservation of anything drawn previously.
-pub const Expose = struct {
-    flags: Flags,
-    /// View-relative top-left X coordinate of region
-    x: i16,
-    /// View-relative top-left Y coordinate of region
-    y: i16,
-    /// Width of exposed region
-    width: u16,
-    /// Height of exposed region
-    height: u16,
+/// Sent with the graphics context active, once for every region being exposed (possibly several per frame).
+/// The application must either draw the region immediately or commit to doing so by the end of the exposure.
+pub const Damage = Region(.damage, c.PuglDamageEvent);
 
-    pub fn cast(self: *const Expose) *const c.PuglExposeEvent {
-        return &.{
-            .type = @backingInt(Type.expose),
-            .flags = self.flags.cast(),
-            .x = self.x,
-            .y = self.y,
-            .width = self.width,
-            .height = self.height,
-        };
-    }
+/// View expose event.
+///
+/// Sent once per frame at the end of an exposure, after any damage events, with the graphics context still active.
+/// The rectangle is a bounding box for all damage being exposed.
+/// The application must finish drawing at least all damaged regions.
+pub const Expose = Region(.expose, c.PuglExposeEvent);
 
-    pub fn from(event: c.PuglExposeEvent) Expose {
-        return .{
-            .flags = Flags.from(event.flags),
-            .x = event.x,
-            .y = event.y,
-            .width = event.width,
-            .height = event.height,
-        };
-    }
-};
+fn Region(comptime event_type: Type, comptime C: type) type {
+    return struct {
+        flags: Flags,
+        /// View-relative top-left X coordinate of region
+        x: i16,
+        /// View-relative top-left Y coordinate of region
+        y: i16,
+        /// Width of region
+        width: u16,
+        /// Height of region
+        height: u16,
+
+        const Self = @This();
+
+        pub fn cast(self: *const Self) *const C {
+            return &.{
+                .type = @backingInt(event_type),
+                .flags = self.flags.cast(),
+                .x = self.x,
+                .y = self.y,
+                .width = self.width,
+                .height = self.height,
+            };
+        }
+
+        pub fn from(event: C) Self {
+            return .{
+                .flags = Flags.from(event.flags),
+                .x = event.x,
+                .y = event.y,
+                .width = event.width,
+                .height = event.height,
+            };
+        }
+    };
+}
 
 /// Key press or release event.
 ///
@@ -779,10 +796,9 @@ pub const Event = union(Type) {
     ///
     /// This event is sent to a view when it is about to be exposed, after the graphics context is entered.
     blank: Any,
-    /// View must be drawn.
-    ///
-    /// This is sent when a region needs to be redrawn, with the graphics context entered and activated for drawing.
-    /// The application must completely draw the given region.
+    /// View region damaged, see `Damage`
+    damage: Damage,
+    /// View must be drawn, see `Expose`
     expose: Expose,
     /// View flush event.
     ///
@@ -851,6 +867,7 @@ pub const Event = union(Type) {
             .configure => .{ .configure = Configure.from(event.configure) },
             .update => .{ .update = Any.from(event.any) },
             .blank => .{ .blank = Any.from(event.any) },
+            .damage => .{ .damage = Damage.from(event.damage) },
             .expose => .{ .expose = Expose.from(event.expose) },
             .flush => .{ .flush = Any.from(event.any) },
             .close => .{ .close = Any.from(event.any) },
