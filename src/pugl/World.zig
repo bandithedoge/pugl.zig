@@ -85,6 +85,25 @@ pub fn getHint(self: *const World, hint: pugl.StringHint) [:0]const u8 {
     return std.mem.span(c.puglGetWorldString(self.world, @backingInt(hint)));
 }
 
+// Get the default scale factor.
+//
+// This can be used to get (the best guess at) the scale factor before creating a view.
+// The parameters can be used to specify a location where a view is to be created to improve accuracy in multi-display
+// setups, but both can be null in which case the scale factor for the default display is used.
+pub fn getScaleFactor(
+    self: *const World,
+    /// The parent of the view to be created, or null
+    parent: ?pugl.View.NativeView,
+    /// The position of the view to be created
+    position: ?pugl.View.Point,
+) f64 {
+    return c.puglGetWorldScaleFactor(
+        self.world,
+        parent orelse 0,
+        if (position) |p| .{ .x = p.x, .y = p.y } else .{ .x = 0, .y = 0 },
+    );
+}
+
 /// Return the time in seconds.
 ///
 /// This is a monotonically increasing clock with high resolution.
