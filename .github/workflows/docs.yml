@@ -34,9 +34,10 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
-          path: "zig-out/docs"
+          name: github-pages
+          path: zig-out/docs
 
       - name: Deploy to GitHub Pages
         id: deployment
