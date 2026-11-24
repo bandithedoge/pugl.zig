@@ -474,6 +474,15 @@ pub fn unrealize(self: *const View) pugl.Error!void {
     try errFromStatus(c.puglUnrealize(self.view));
 }
 
+// Apply any changed configuration hints/etc after a view has been realized.
+//
+// Some hints or other properties are mainly intended for initial view configuration,
+// but may also have effects that can be applied after the view has been initially configured and realized.
+// This function applies those changes, for example by updating the window's size constraints.
+pub fn reconfigure(self: *const View) pugl.Error!void {
+    try errFromStatus(c.puglReconfigure(self.view));
+}
+
 /// A command to control the behaviour of `show`.
 pub const ShowCommand = enum(c_uint) {
     /// Realize and show the window without intentionally raising it.
